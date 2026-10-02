@@ -1,0 +1,177 @@
+﻿@page
+@model CookiMateWeb.Pages.SettingsModel
+@{
+    ViewData["Title"] = "Settings";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <style>
+        .settings-page {
+            background: radial-gradient(circle at top left, rgba(123, 192, 67, 0.10), transparent 28%), radial-gradient(circle at top right, rgba(78, 159, 61, 0.08), transparent 24%), linear-gradient(to bottom, #f8fcf6, #ffffff 260px);
+            min-height: 100vh;
+        }
+
+        .settings-container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 34px 20px 70px;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, #ffffff, #f6fbf2);
+            border: 1px solid #eef2e8;
+            border-radius: 28px;
+            padding: 30px 30px 8px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
+            margin-bottom: 26px;
+        }
+
+        .hero-title {
+            font-size: 30px;
+            font-weight: 800;
+            color: #2f5d2f;
+            margin-bottom: 6px;
+        }
+
+        .hero-subtitle {
+            color: #6b7280;
+            font-size: 14.5px;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .form-card {
+            background: #ffffff;
+            border: 1px solid #eef2e8;
+            border-radius: 24px;
+            padding: 28px 30px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.05);
+        }
+
+        .theme-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .theme-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .theme-sub {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-top: 3px;
+        }
+
+        .theme-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-option {
+            border: 2px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+            .theme-option.active {
+                border-color: #4e9f3d;
+                background: #f0fdf4;
+                color: #2f5d2f;
+            }
+
+        .save-btn {
+            width: 100%;
+            border: none;
+            border-radius: 999px;
+            padding: 13px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            background: linear-gradient(135deg, #4e9f3d, #7bc043);
+            cursor: pointer;
+        }
+
+        .field-hint {
+            font-size: 12.5px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+    </style>
+}
+
+<div class="settings-page">
+    <div class="settings-container">
+        <div class="hero-card">
+            <div class="hero-title">Settings</div>
+            <div class="hero-subtitle">Choose how CookiMate looks.</div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <div class="alert-success">@Model.SuccessMessage</div>
+        }
+
+        <div class="form-card">
+            <form method="post">
+                <div class="theme-row">
+                    <div>
+                        <div class="theme-label">Appearance</div>
+                        <div class="theme-sub">Applies across the site.</div>
+                    </div>
+                    <div class="theme-options">
+                        <label class="theme-option @(Model.Input.Theme == "light" ? "active" : "")">
+                            <input type="radio" asp-for="Input.Theme" value="light" style="display:none;" onchange="this.form.requestSubmit ? null : null" />
+                            ☀️ Light
+                        </label>
+                        <label class="theme-option @(Model.Input.Theme == "dark" ? "active" : "")">
+                            <input type="radio" asp-for="Input.Theme" value="dark" style="display:none;" />
+                            🌙 Dark
+                        </label>
+                    </div>
+                </div>
+                <div class="field-hint" style="margin-bottom:18px;">
+                    Dark mode applies a sitewide tint to backgrounds and text. Individual
+                    recipe card colors and images are unaffected.
+                </div>
+
+                <button type="submit" class="save-btn">Save Appearance</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Instant visual feedback on click, before the form round-trips.
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".theme-option").forEach(function (opt) {
+            opt.addEventListener("click", function () {
+                document.querySelectorAll(".theme-option").forEach(function (o) {
+                    o.classList.remove("active");
+                });
+                opt.classList.add("active");
+            });
+        });
+    });
+</script>

@@ -1,0 +1,686 @@
+﻿@page
+@model CookiMateWeb.Pages.SearchModel
+@{
+    ViewData["Title"] = "Search Recipes";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <style>
+        .search-page {
+            background: radial-gradient(circle at top left, rgba(123, 192, 67, 0.10), transparent 28%), radial-gradient(circle at top right, rgba(78, 159, 61, 0.08), transparent 24%), linear-gradient(to bottom, #f8fcf6, #ffffff 260px);
+            min-height: 100vh;
+        }
+
+        .search-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 34px 20px 70px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            text-decoration: none;
+            color: #4e9f3d;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+            .back-link:hover {
+                text-decoration: underline;
+            }
+
+        .hero-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #ffffff, #f6fbf2);
+            border: 1px solid #eef2e8;
+            border-radius: 28px;
+            padding: 34px 30px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
+            margin-bottom: 22px;
+        }
+
+            .hero-card::before {
+                content: "";
+                position: absolute;
+                top: -40px;
+                right: -30px;
+                width: 180px;
+                height: 180px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(123, 192, 67, 0.18), transparent 70%);
+                pointer-events: none;
+            }
+
+        .hero-title {
+            font-size: 34px;
+            font-weight: 800;
+            color: #2f5d2f;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            color: #6b7280;
+            font-size: 15px;
+            line-height: 1.8;
+            max-width: 780px;
+        }
+
+        .filter-card {
+            background: #ffffff;
+            border-radius: 24px;
+            border: 1px solid #eef2e8;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 1fr auto;
+            gap: 14px;
+            align-items: end;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+            border: 1.5px solid #d1d5db;
+            border-radius: 14px;
+            padding: 13px 14px;
+            font-size: 14px;
+            background: #ffffff;
+            transition: 0.2s ease;
+        }
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: #6dbe45;
+                box-shadow: 0 0 0 4px rgba(109, 190, 69, 0.15);
+                outline: none;
+            }
+
+        .search-btn,
+        .clear-btn {
+            border: none;
+            border-radius: 14px;
+            padding: 13px 18px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s ease;
+            min-height: 50px;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #4e9f3d, #7bc043);
+            color: white;
+            box-shadow: 0 10px 22px rgba(78, 159, 61, 0.22);
+        }
+
+            .search-btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 14px 26px rgba(78, 159, 61, 0.28);
+            }
+
+        .clear-btn {
+            background: white;
+            color: #4e9f3d;
+            border: 1.5px solid #b8dca3;
+        }
+
+            .clear-btn:hover {
+                background: #f7fbf4;
+            }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        .toolbar-left h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: #2f5d2f;
+        }
+
+        .toolbar-left p {
+            margin: 5px 0 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .page-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 999px;
+            padding: 10px 16px;
+            background: #ffffff;
+            border: 1px solid #e5efe0;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+            font-size: 14px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .alert-error {
+            margin-bottom: 18px;
+            padding: 13px 15px;
+            border-radius: 14px;
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            font-size: 14px;
+        }
+
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .recipe-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            height: 100%;
+        }
+
+        .recipe-card {
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid #eef2e8;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.06);
+            transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .recipe-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 22px 42px rgba(0, 0, 0, 0.10);
+                border-color: #dcebd1;
+            }
+
+        .recipe-image-wrap {
+            position: relative;
+            width: 100%;
+            height: 230px;
+            background: linear-gradient(135deg, #f7fbf4, #eef8e8);
+            overflow: hidden;
+        }
+
+        .recipe-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .recipe-card:hover .recipe-image {
+            transform: scale(1.03);
+        }
+
+        .difficulty-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            padding: 8px 13px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: capitalize;
+            backdrop-filter: blur(8px);
+            background: rgba(240, 253, 244, 0.94);
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .recipe-body {
+            padding: 20px 20px 18px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .recipe-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .mini-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid transparent;
+        }
+
+        .mini-badge-cuisine {
+            background: #f8fafc;
+            color: #334155;
+            border-color: #e2e8f0;
+        }
+
+        .mini-badge-diet {
+            background: #fff7ed;
+            color: #9a3412;
+            border-color: #fed7aa;
+        }
+
+        .recipe-title {
+            font-size: 20px;
+            font-weight: 750;
+            color: #2f5d2f;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .recipe-description {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.8;
+            margin-bottom: 16px;
+            min-height: 76px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .recipe-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .meta-pill {
+            background: linear-gradient(135deg, #f8fcf6, #f2f9ed);
+            border: 1px solid #e7f1df;
+            border-radius: 16px;
+            padding: 12px 10px;
+            text-align: center;
+        }
+
+        .meta-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            color: #6b7280;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .meta-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-top: 14px;
+            border-top: 1px solid #f2f4ef;
+        }
+
+        .view-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #4e9f3d;
+        }
+
+        .score-hint {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .view-arrow {
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef8e8;
+            color: #4e9f3d;
+            font-size: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .recipe-card:hover .view-arrow {
+            transform: translateX(3px);
+        }
+
+        .empty-state {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 58px 28px;
+            text-align: center;
+            border: 1px solid #eef2e8;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.06);
+        }
+
+        .empty-icon {
+            width: 82px;
+            height: 82px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            color: #4e9f3d;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .empty-state h3 {
+            font-size: 25px;
+            font-weight: 700;
+            color: #2f5d2f;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.8;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        @@media (max-width: 900px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media (max-width: 640px) {
+            .search-container {
+                padding: 24px 14px 56px;
+            }
+
+            .hero-title {
+                font-size: 28px;
+            }
+
+            .toolbar {
+                align-items: stretch;
+            }
+
+            .page-badge {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .recipe-title {
+                font-size: 18px;
+            }
+
+            .recipe-meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .recipe-description {
+                min-height: auto;
+            }
+        }
+    </style>
+}
+
+<div class="search-page">
+    <div class="search-container">
+        <a href="/Index" class="back-link">
+            <span>←</span>
+            <span>Back to Recipes</span>
+        </a>
+
+        <div class="hero-card">
+            <div class="hero-title">Search Recipes</div>
+            <div class="hero-subtitle">
+                Search recipes by keyword and optionally refine the results by ingredients, dietary type, and cuisine.
+                The results are ranked by your AI search engine.
+            </div>
+        </div>
+
+        <div class="filter-card">
+            <form method="get">
+                <div class="filter-grid">
+                    <div>
+                        <label asp-for="Q" class="form-label">Keyword</label>
+                        <input asp-for="Q" class="form-control" placeholder="e.g. chicken rice" />
+                    </div>
+
+                    <div>
+                        <label asp-for="Ingredients" class="form-label">Ingredients</label>
+                        <input asp-for="Ingredients" class="form-control" placeholder="e.g. rice, chicken, garlic" />
+                    </div>
+
+                    <div>
+                        <label asp-for="DietType" class="form-label">Diet Type</label>
+                        <select asp-for="DietType" class="form-select">
+                            <option value="">All</option>
+                            <option value="vegetarian">vegetarian</option>
+                            <option value="vegan">vegan</option>
+                            <option value="halal">halal</option>
+                            <option value="low-carb">low-carb</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label asp-for="Cuisine" class="form-label">Cuisine</label>
+                        <select asp-for="Cuisine" class="form-select">
+                            <option value="">All</option>
+                            <option value="Chinese">Chinese</option>
+                            <option value="Malay">Malay</option>
+                            <option value="Western">Western</option>
+                            <option value="Indian">Indian</option>
+                        </select>
+                    </div>
+
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button type="submit" class="search-btn">Search</button>
+                        <a href="/Search" class="clear-btn">Clear</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <h2>Ranked Search Results</h2>
+                <p>
+                    @if (Model.HasSearched)
+                    {
+                        <span>Showing @Model.ResultCount result(s) based on your search input.</span>
+                    }
+                    else
+                    {
+                        <span>Enter a keyword or select filters to start searching.</span>
+                    }
+                </p>
+            </div>
+
+            <div class="page-badge">
+                <span>Results</span>
+                <strong>@Model.ResultCount</strong>
+            </div>
+        </div>
+
+        @if (Model.HasSearched && Model.ExcludedByPreferences > 0)
+        {
+            <div style="margin-bottom: 18px; padding: 11px 16px; border-radius: 14px; background: #f0fdf4; border: 1px solid #bbf7d0; color: #2f5d2f; font-size: 13.5px;">
+                🛡️ Results filtered per your saved preferences 
+                @*— @Model.ExcludedByPreferences recipe(s) hidden based on your saved allergies/dislikes*@.
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert-error">@Model.ErrorMessage</div>
+        }
+
+        @if (!Model.HasSearched)
+        {
+            <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <h3>Start your search</h3>
+                <p>
+                    Enter recipe keywords and optionally refine the results with ingredients, dietary type, and cuisine filters.
+                </p>
+            </div>
+        }
+        else if (Model.Recipes == null || !Model.Recipes.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon">🍽</div>
+                <h3>No matches found</h3>
+                <p>
+                    @if (Model.IsFallback)
+                    {
+                        @Model.FallbackMessage
+                    }
+                    else
+                    {
+                        <span>Try changing your search keyword or selected filters to discover more recipes.</span>
+                    }
+                </p>
+            </div>
+        }
+        else
+        {
+            @if (Model.IsFallback)
+            {
+                <div style="margin-bottom: 18px; padding: 13px 16px; border-radius: 14px; background: #fffbeb; border: 1px solid #fde68a; color: #92400e; font-size: 18px; font-weight: 700;">
+                    💡 @Model.FallbackMessage
+                </div>
+            }
+
+            <div class="recipes-grid">
+                @foreach (var recipe in Model.Recipes)
+                {
+                    var imagePath = string.IsNullOrWhiteSpace(recipe.ImageUrl)
+                        ? "/images/recipes/default-food.jpg"
+                        : recipe.ImageUrl;
+
+                    var descriptionText = string.IsNullOrWhiteSpace(recipe.Description)
+                        ? "No description available for this recipe."
+                        : recipe.Description;
+
+                    <a asp-page="/ViewRecipe"
+                           asp-route-id="@recipe.RecipeId"
+                           asp-route-from="search"
+                           asp-route-q="@Model.Q"
+                           asp-route-ingredients="@Model.Ingredients"
+                           asp-route-dietType="@Model.DietType"
+                           asp-route-cuisine="@Model.Cuisine"
+                           class="recipe-card-link">
+                        <div class="recipe-card">
+                            <div class="recipe-image-wrap">
+                                <img src="@imagePath" alt="@recipe.Title" class="recipe-image" />
+                                <span class="difficulty-badge">
+                                    @(string.IsNullOrWhiteSpace(recipe.Difficulty) ? "Medium" : recipe.Difficulty)
+                                </span>
+                            </div>
+
+                            <div class="recipe-body">
+                                <div class="recipe-badges">
+                                    @if (!string.IsNullOrWhiteSpace(recipe.Cuisine))
+                                    {
+                                        <span class="mini-badge mini-badge-cuisine">@recipe.Cuisine</span>
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(recipe.DietType))
+                                    {
+                                        <span class="mini-badge mini-badge-diet">@recipe.DietType</span>
+                                    }
+                                </div>
+
+                                <div class="recipe-title">@recipe.Title</div>
+
+                                <div class="recipe-description">
+                                    @descriptionText
+                                </div>
+
+                                <div class="recipe-meta-grid">
+                                    <div class="meta-pill">
+                                        <div class="meta-label">Prep Time</div>
+                                        <div class="meta-value">
+                                            @(recipe.PrepTime.HasValue ? $"{recipe.PrepTime} mins" : "-")
+                                        </div>
+                                    </div>
+
+                                    <div class="meta-pill">
+                                        <div class="meta-label">Cook Time</div>
+                                        <div class="meta-value">
+                                            @(recipe.CookTime.HasValue ? $"{recipe.CookTime} mins" : "-")
+                                        </div>
+                                    </div>
+
+                                    <div class="meta-pill">
+                                        <div class="meta-label">Servings</div>
+                                        <div class="meta-value">
+                                            @(recipe.Servings.HasValue? recipe.Servings.ToString() : "-")
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-footer">
+                                    <div>
+                                        <div class="view-hint">View Recipe</div>
+                                        @* @if (recipe.FinalScore.HasValue)
+                                        {
+                                            <div class="score-hint">Score: @recipe.FinalScore.Value.ToString("0.000")</div>
+                                        } *@
+                                    </div>
+                                    <span class="view-arrow">→</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</div>

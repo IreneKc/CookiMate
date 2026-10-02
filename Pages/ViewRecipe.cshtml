@@ -1,0 +1,950 @@
+﻿@page
+@model ViewRecipeModel
+@{
+    ViewData["Title"] = "Recipe Details";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <style>
+        .viewrecipe-page {
+            background: radial-gradient(circle at top left, rgba(123, 192, 67, 0.10), transparent 28%), radial-gradient(circle at top right, rgba(78, 159, 61, 0.08), transparent 24%), linear-gradient(to bottom, #f8fcf6, #ffffff 260px);
+            min-height: 100vh;
+        }
+
+        .viewrecipe-container {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 34px 20px 70px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            text-decoration: none;
+            color: #4e9f3d;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .alert-error {
+            margin-bottom: 18px;
+            padding: 13px 15px;
+            border-radius: 14px;
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            margin-bottom: 20px;
+            padding: 16px 18px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #4e9f3d, #7bc043);
+            color: #ffffff;
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            box-shadow: 0 12px 25px rgba(78, 159, 61, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeSlideDown 0.5s ease;
+        }
+
+        .allergen-warning {
+            margin-bottom: 20px;
+            padding: 16px 18px;
+            border-radius: 16px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            animation: fadeSlideDown 0.5s ease;
+        }
+
+        .allergen-warning-icon {
+            font-size: 22px;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .allergen-warning-body {
+            flex: 1;
+        }
+
+        .allergen-warning-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #991b1b;
+            margin-bottom: 4px;
+        }
+
+        .allergen-warning-text {
+            font-size: 13.5px;
+            color: #b91c1c;
+            line-height: 1.6;
+        }
+
+        .allergen-warning-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .allergen-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .badge-allergen {
+            background: #fef2f2;
+            color: #991b1b;
+            border-color: #fecaca;
+        }
+
+        .recipe-hero {
+            background: #ffffff;
+            border: 1px solid #eef2e8;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
+            margin-bottom: 24px;
+        }
+
+        .recipe-hero-grid {
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            gap: 0;
+        }
+
+        .recipe-image-wrap {
+            min-height: 380px;
+            background: linear-gradient(135deg, #f7fbf4, #eef8e8);
+        }
+
+        .recipe-image {
+            width: 100%;
+            height: 100%;
+            min-height: 380px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .recipe-hero-content {
+            padding: 30px 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .recipe-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 13px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid transparent;
+        }
+
+        .badge-difficulty {
+            background: rgba(240, 253, 244, 0.95);
+            color: #166534;
+            border-color: #bbf7d0;
+        }
+
+        .badge-cuisine {
+            background: #f8fafc;
+            color: #334155;
+            border-color: #e2e8f0;
+        }
+
+        .badge-diet {
+            background: #fff7ed;
+            color: #9a3412;
+            border-color: #fed7aa;
+        }
+
+        .badge-meal {
+            background: #eff6ff;
+            color: #1e40af;
+            border-color: #bfdbfe;
+        }
+
+        .recipe-title {
+            font-size: 34px;
+            font-weight: 800;
+            color: #2f5d2f;
+            line-height: 1.25;
+            margin-bottom: 14px;
+        }
+
+        .recipe-description {
+            color: #6b7280;
+            font-size: 15px;
+            line-height: 1.9;
+            margin-bottom: 22px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .meta-card {
+            background: linear-gradient(135deg, #f8fcf6, #f2f9ed);
+            border: 1px solid #e7f1df;
+            border-radius: 18px;
+            padding: 14px 12px;
+            text-align: center;
+        }
+
+        .meta-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        .meta-value {
+            font-size: 16px;
+            font-weight: 800;
+            color: #374151;
+        }
+
+        .rating-summary {
+            margin-top: 16px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-action-panel {
+            margin-top: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .favorite-btn {
+            border: none;
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+            background: linear-gradient(135deg, #4e9f3d, #7bc043);
+            color: white;
+            box-shadow: 0 10px 20px rgba(78, 159, 61, 0.18);
+        }
+
+            .favorite-btn:hover,
+            .submit-review-btn:hover {
+                opacity: 0.94;
+                transform: translateY(-1px);
+            }
+
+        .login-note {
+            margin-top: 18px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 0.92fr 1.08fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .section-card {
+            background: #ffffff;
+            border: 1px solid #eef2e8;
+            border-radius: 24px;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.05);
+            padding: 24px 22px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #2f5d2f;
+            margin-bottom: 16px;
+        }
+
+        .ingredients-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ingredient-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: #f9fbf7;
+            border: 1px solid #eef2e8;
+        }
+
+        .ingredient-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #4e9f3d, #7bc043);
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        .ingredient-text {
+            color: #374151;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .instruction-box {
+            background: #fbfdf9;
+            border: 1px solid #eef2e8;
+            border-radius: 18px;
+            padding: 18px;
+        }
+
+        .instruction-text {
+            white-space: pre-line;
+            color: #374151;
+            font-size: 15px;
+            line-height: 1.95;
+        }
+
+        .tags-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .tag-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #f4f8f0;
+            color: #4b5563;
+            border: 1px solid #e3ecd9;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .review-section {
+            margin-top: 24px;
+        }
+
+        .review-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .review-input,
+        .review-textarea {
+            width: 100%;
+            border: 1.5px solid #d1d5db;
+            border-radius: 14px;
+            padding: 13px 14px;
+            font-size: 14px;
+            background: #ffffff;
+            transition: 0.2s ease;
+        }
+
+        .review-textarea {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+            .review-input:focus,
+            .review-textarea:focus {
+                border-color: #6dbe45;
+                box-shadow: 0 0 0 4px rgba(109, 190, 69, 0.15);
+                outline: none;
+            }
+
+        .submit-review-btn {
+            align-self: flex-start;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 18px;
+            font-weight: 700;
+            cursor: pointer;
+            background: #2f5d2f;
+            color: white;
+            transition: 0.2s ease;
+        }
+
+        .reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .review-card {
+            background: #fbfdf9;
+            border: 1px solid #eef2e8;
+            border-radius: 18px;
+            padding: 16px 16px;
+        }
+
+        .review-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .review-author {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2f5d2f;
+        }
+
+        .review-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .review-rating {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #eef8e8;
+            color: #2f5d2f;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .review-date {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .review-comment {
+            color: #374151;
+            font-size: 20px;
+            line-height: 0.6;
+            white-space: pre-line;
+        }
+
+        .empty-mini {
+            color: #9ca3af;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        @@media (max-width: 900px) {
+            .recipe-hero-grid,
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .recipe-image,
+            .recipe-image-wrap {
+                min-height: 280px;
+            }
+        }
+
+        @@media (max-width: 640px) {
+            .viewrecipe-container {
+                padding: 24px 14px 56px;
+            }
+
+            .recipe-hero-content {
+                padding: 22px 18px;
+            }
+
+            .recipe-title {
+                font-size: 28px;
+            }
+
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-card {
+                padding: 20px 16px;
+            }
+
+            .submit-review-btn,
+            .favorite-btn {
+                width: 100%;
+            }
+        }
+
+        @@keyframes fadeSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .mealplan-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d9e9cf;
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.2s ease;
+            background: #ffffff;
+            color: #2f5d2f;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+        }
+        .mealplan-btn:hover {
+            text-decoration: none;
+            color: #2f5d2f;
+            background: #f6fbf2;
+            border-color: #cfe3c2;
+            transform: translateY(-1px);
+        }
+        .mealplan-form-card {
+            background: #ffffff;
+            border: 1px solid #e5efe0;
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.05);
+        }
+        .mealplan-form-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #2f5d2f;
+            margin-bottom: 12px;
+        }
+        .mealplan-form-group {
+            margin-bottom: 12px;
+        }
+    </style>
+}
+
+<div class="viewrecipe-page">
+    <div class="viewrecipe-container">
+        @{
+            var backUrl = "/Index";
+            var backText = "Back to Recipes";
+
+            if (Model.From == "favorites")
+            {
+                backUrl = "/Favorites";
+                backText = "Back to Favorites";
+            }
+            else if (Model.From == "recommend")
+            {
+                backUrl = "/Recommend" + (Model.TopK.HasValue ? $"?TopK={Model.TopK.Value}" : "");
+                backText = "Back to Recommendations";
+            }
+            else if (Model.From == "search")
+            {
+                var queryParams = new List<string>();
+
+                if (!string.IsNullOrWhiteSpace(Model.Q))
+                    queryParams.Add($"q={Uri.EscapeDataString(Model.Q)}");
+
+                if (!string.IsNullOrWhiteSpace(Model.SearchIngredients))
+                    queryParams.Add($"ingredients={Uri.EscapeDataString(Model.SearchIngredients)}");
+
+                if (!string.IsNullOrWhiteSpace(Model.DietType))
+                    queryParams.Add($"dietType={Uri.EscapeDataString(Model.DietType)}");
+
+                if (!string.IsNullOrWhiteSpace(Model.Cuisine))
+                    queryParams.Add($"cuisine={Uri.EscapeDataString(Model.Cuisine)}");
+
+                backUrl = "/Search" + (queryParams.Any() ? "?" + string.Join("&", queryParams) : "");
+                backText = "Back to Search Results";
+            }
+            else if (Model.From == "mealplan")
+            {
+                var dateParam = "";
+
+                if (Request.Query.ContainsKey("date"))
+                {
+                    dateParam = "?date=" + Uri.EscapeDataString(Request.Query["date"].ToString());
+                }
+
+                backUrl = "/MealPlan" + dateParam;
+                backText = "Back to Meal Plan";
+            }
+            else if (Model.From == "managerecipe")
+            {
+                var queryParams = new List<string>();
+
+                if (!string.IsNullOrWhiteSpace(Model.Status))
+                    queryParams.Add($"status={Uri.EscapeDataString(Model.Status)}");
+
+                if (Model.P.HasValue)
+                    queryParams.Add($"p={Model.P.Value}");
+
+                backUrl = "/ManageRecipe" + (queryParams.Any() ? "?" + string.Join("&", queryParams) : "");
+                backText = "Back to Manage Recipes";
+            }
+        }
+
+        <a href="@backUrl" class="back-link">
+            <span>←</span>
+            <span>@backText</span>
+        </a>
+
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <div class="alert-success">@Model.SuccessMessage</div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert-error">@Model.ErrorMessage</div>
+        }
+
+        @if (Model.MatchedAllergens != null && Model.MatchedAllergens.Any())
+        {
+            <div class="allergen-warning">
+                <div class="allergen-warning-icon">⚠️</div>
+                <div class="allergen-warning-body">
+                    <div class="allergen-warning-title">Allergen Warning</div>
+                    <div class="allergen-warning-text">
+                        This recipe contains ingredients that match your saved allergies:
+                    </div>
+                    <div class="allergen-warning-tags">
+                        @foreach (var allergen in Model.MatchedAllergens)
+                        {
+                            <span class="allergen-tag">@allergen</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.Recipe == null)
+        {
+            <div class="section-card">
+                <div class="section-title">Recipe Not Found</div>
+                <div class="empty-mini">The recipe you are looking for does not exist or is not available.</div>
+            </div>
+        }
+        else
+        {
+            var imagePath = string.IsNullOrWhiteSpace(Model.Recipe.ImageUrl)
+                ? "/images/recipes/default-food.jpg"
+                : Model.Recipe.ImageUrl;
+
+            <div class="recipe-hero">
+                <div class="recipe-hero-grid">
+                    <div class="recipe-image-wrap">
+                        <img src="@imagePath" alt="@Model.Recipe.Title" class="recipe-image" />
+                    </div>
+
+                    <div class="recipe-hero-content">
+                        <div class="recipe-badges">
+                            <span class="badge badge-difficulty">
+                                @(string.IsNullOrWhiteSpace(Model.Recipe.Difficulty) ? "Medium" : Model.Recipe.Difficulty)
+                            </span>
+
+                            @if (!string.IsNullOrWhiteSpace(Model.Recipe.Cuisine))
+                            {
+                                <span class="badge badge-cuisine">@Model.Recipe.Cuisine</span>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(Model.Recipe.DietType))
+                            {
+                                <span class="badge badge-diet">@Model.Recipe.DietType</span>
+                            }
+
+                            @if (Model.Recipe.MealTypes != null && Model.Recipe.MealTypes.Any())
+                            {
+                                @foreach (var meal in Model.Recipe.MealTypes)
+                                {
+                                    <span class="badge badge-meal">@meal</span>
+                                }
+                            }
+
+                            @if (Model.RecipeAllergens != null && Model.RecipeAllergens.Any())
+                            {
+                                <div style="width:100%; display:flex; flex-wrap:wrap; align-items:center; gap:6px;">
+                                    <span style="font-size:12px; font-weight:700; color:#991b1b;">Contains allergens:</span>
+                                    @foreach (var allergen in Model.RecipeAllergens)
+                                    {
+                                        <span class="badge badge-allergen">@allergen</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        <div class="recipe-title">@Model.Recipe.Title</div>
+
+                        <div class="recipe-description">
+                            @(string.IsNullOrWhiteSpace(Model.Recipe.Description)
+                                ? "No description available for this recipe."
+                                : Model.Recipe.Description)
+                        </div>
+
+                        <div class="meta-grid">
+                            <div class="meta-card">
+                                <div class="meta-label">Prep Time</div>
+                                <div class="meta-value">
+                                    @(Model.Recipe.PrepTime.HasValue ? $"{Model.Recipe.PrepTime} mins" : "-")
+                                </div>
+                            </div>
+
+                            <div class="meta-card">
+                                <div class="meta-label">Cook Time</div>
+                                <div class="meta-value">
+                                    @(Model.Recipe.CookTime.HasValue ? $"{Model.Recipe.CookTime} mins" : "-")
+                                </div>
+                            </div>
+
+                            <div class="meta-card">
+                                <div class="meta-label">Servings</div>
+                                <div class="meta-value">
+                                    @(Model.Recipe.Servings.HasValue? Model.Recipe.Servings.ToString() : "-")
+                                </div>
+                            </div>
+
+                            <div class="meta-card">
+                                <div class="meta-label">Calories</div>
+                                <div class="meta-value">
+                                    @(Model.Recipe.Calories.HasValue ? $"{Model.Recipe.Calories} kcal" : "-")
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Model.Recipe.AverageRating.HasValue)
+                        {
+                            <div class="rating-summary">
+                                Average Rating: @Model.Recipe.AverageRating.Value.ToString("0.0") / 5
+                            </div>
+                        }
+
+                        @if (Model.IsLoggedIn)
+                        {
+                            <div class="user-action-panel">
+                                @if (Model.CanShowUserActions)
+                                {
+                                    <form method="post" asp-page-handler="Favorite" asp-route-id="@Model.Recipe.RecipeId">
+                                        <button type="submit" class="favorite-btn">
+                                            @(            Model.IsFavorited ? "Saved to Favorites" : "Save to Favorites")
+                                        </button>
+                                    </form>
+
+                                    <form method="post" asp-page-handler="CreateMealPlan" asp-route-id="@Model.Recipe.RecipeId" class="mealplan-form">
+                                        <div class="mealplan-form-card">
+                                            <div class="mealplan-form-title">Create Meal Plan</div>
+
+                                            @* <div class="mealplan-form-group">
+                                                <label asp-for="MealPlanTitleInput" class="meta-label">Meal Plan Title</label>
+                                                <input asp-for="MealPlanTitleInput" class="review-input" placeholder="e.g. Healthy Monday Plan" />
+                                                <span asp-validation-for="MealPlanTitleInput" class="field-validation-error"></span>
+                                            </div> *@
+
+                                            <div class="mealplan-form-group">
+                                                <label asp-for="MealPlanDateInput" class="meta-label">Plan Date</label>
+                                                <input asp-for="MealPlanDateInput" type="date" class="review-input" />
+                                                <span asp-validation-for="MealPlanDateInput" class="field-validation-error"></span>
+                                            </div>
+
+                                            <div class="mealplan-form-group">
+                                                <label asp-for="MealTypeInput" class="meta-label">Meal Type</label>
+                                                <select asp-for="MealTypeInput" class="review-input">
+                                                    <option value="">Select meal type</option>
+                                                    <option value="breakfast">Breakfast</option>
+                                                    <option value="lunch">Lunch</option>
+                                                    <option value="dinner">Dinner</option>
+                                                    <option value="snack">Snack</option>
+                                                </select>
+                                                <span asp-validation-for="MealTypeInput" class="field-validation-error"></span>
+                                            </div>
+
+                                            <button type="submit" class="mealplan-btn">
+                                                Add to Meal Plan
+                                            </button>
+                                        </div>
+                                    </form>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="login-note">
+                                Log in to save this recipe to your favorites, create a meal plan, and post your review.
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="section-card">
+                    <div class="section-title">Ingredients</div>
+
+                    @if (Model.Ingredients == null || !Model.Ingredients.Any())
+                    {
+                        <div class="empty-mini">No ingredient information available.</div>
+                    }
+                    else
+                    {
+                        <div class="ingredients-list">
+                            @foreach (var item in Model.Ingredients)
+                            {
+                                var ingredientLine = "";
+
+                                if (!string.IsNullOrWhiteSpace(item.Quantity))
+                                {
+                                    ingredientLine += item.Quantity.Trim() + " ";
+                                }
+
+                                if (!string.IsNullOrWhiteSpace(item.Unit))
+                                {
+                                    ingredientLine += item.Unit.Trim() + " ";
+                                }
+
+                                ingredientLine += item.IngredientName ?? "";
+
+                                <div class="ingredient-item">
+                                    <span class="ingredient-dot"></span>
+                                    <div class="ingredient-text">@ingredientLine.Trim()</div>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    @if (Model.Tags != null && Model.Tags.Any())
+                    {
+                        <div class="tags-wrap">
+                            @foreach (var tag in Model.Tags)
+                            {
+                                <span class="tag-pill">@tag</span>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="section-card">
+                    <div class="section-title">Instructions</div>
+
+                    <div class="instruction-box">
+                        <div class="instruction-text">
+                            @(string.IsNullOrWhiteSpace(Model.Recipe.Instructions)
+                                ? "No instructions available."
+                                : Model.Recipe.Instructions)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (Model.CanShowUserActions)
+            {
+                <div class="section-card review-section">
+                    <div class="section-title">Ratings & Comments</div>
+
+                    @if (Model.IsLoggedIn)
+                    {
+                        <form method="post" asp-page-handler="Review" asp-route-id="@Model.Recipe.RecipeId" class="review-form">
+                            <div>
+                                <label asp-for="RatingInput" class="meta-label">Your Rating</label>
+                                <select asp-for="RatingInput" class="review-input">
+                                    <option value="">Select rating</option>
+                                    <option value="1">1 - Poor</option>
+                                    <option value="2">2 - Fair</option>
+                                    <option value="3">3 - Good</option>
+                                    <option value="4">4 - Very Good</option>
+                                    <option value="5">5 - Excellent</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label asp-for="CommentInput" class="meta-label">Your Comment</label>
+                                <textarea asp-for="CommentInput" class="review-textarea" placeholder="Share your thoughts about this recipe..."></textarea>
+                            </div>
+
+                            <button type="submit" class="submit-review-btn">Post Review</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="login-note" style="margin-top:0;">
+                            Log in to post your rating and comment.
+                        </div>
+                    }
+
+                    @if (Model.Reviews == null || !Model.Reviews.Any())
+                    {
+                        <div class="empty-mini" style="margin-top:18px;">No reviews yet. Be the first to share your feedback.</div>
+                    }
+                    else
+                    {
+                        <div class="reviews-list">
+                            @foreach (var review in Model.Reviews)
+                            {
+                                <div class="review-card">
+                                    <div class="review-top">
+                                        <div class="review-author">@review.CreatedByName</div>
+
+                                        <div class="review-meta">
+                                            <span class="review-rating">Rated @review.Rating / 5</span>
+                                            <span class="review-date">@review.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="review-comment">
+                                        @(string.IsNullOrWhiteSpace(review.Comment) ? "No comment provided." : review.Comment)
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </div>
+</div>

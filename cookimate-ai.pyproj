@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5163cff1-09b0-4f8f-9685-57e92a3bdf50}</ProjectGuid>
+    <ProjectHome>..\sourceCookimate\cookimate-ai\</ProjectHome>
+    <StartupFile>run_fastapi.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>MSBuild|.venv|$(MSBuildProjectFullPath)</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="db.py" />
+    <Compile Include="fill_missing_recipe_data.py" />
+    <Compile Include="import_dataset.py" />
+    <Compile Include="main.py" />
+    <Compile Include="model_cache.py" />
+    <Compile Include="admin.py" />
+    <Compile Include="guidance.py" />
+    <Compile Include="llm_fallback.py" />
+    <Compile Include="allergen_taxonomy.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="allergen.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="user_preferences.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="test_llm.py" />
+    <Compile Include="scoring_utils.py" />
+    <Compile Include="text_utils.py" />
+    <Compile Include="recommendations.py" />
+    <Compile Include="search.py" />
+    <Compile Include="run_fastapi.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include=".venv\">
+      <Id>.venv</Id>
+      <Description>.venv (Python 3.12 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <Version>3.12</Version>
+      <Architecture>X64</Architecture>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+    </Interpreter>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>

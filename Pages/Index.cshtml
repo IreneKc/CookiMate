@@ -1,0 +1,570 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Recipes";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <style>
+        .index-page {
+            background: radial-gradient(circle at top left, rgba(123, 192, 67, 0.10), transparent 28%), radial-gradient(circle at top right, rgba(78, 159, 61, 0.08), transparent 24%), linear-gradient(to bottom, #f8fcf6, #ffffff 260px);
+            min-height: 100vh;
+        }
+
+        .index-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 34px 20px 70px;
+        }
+
+        .hero-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #ffffff, #f6fbf2);
+            border: 1px solid #eef2e8;
+            border-radius: 28px;
+            padding: 34px 30px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
+            margin-bottom: 26px;
+        }
+
+            .hero-card::before {
+                content: "";
+                position: absolute;
+                top: -40px;
+                right: -30px;
+                width: 180px;
+                height: 180px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(123, 192, 67, 0.18), transparent 70%);
+                pointer-events: none;
+            }
+
+        .hero-title {
+            font-size: 34px;
+            font-weight: 800;
+            color: #2f5d2f;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            color: #6b7280;
+            font-size: 15px;
+            line-height: 1.8;
+            max-width: 760px;
+            margin-bottom: 18px;
+        }
+
+        .hero-stats {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #ffffff;
+            border: 1px solid #e7efdf;
+            border-radius: 999px;
+            padding: 10px 16px;
+            box-shadow: 0 8px 18px rgba(78, 159, 61, 0.08);
+            font-size: 14px;
+            color: #4b5563;
+            font-weight: 600;
+        }
+
+        .hero-stats-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 30px;
+            height: 30px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #4e9f3d, #7bc043);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 0 10px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        .topbar-left h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: #2f5d2f;
+        }
+
+        .topbar-left p {
+            margin: 5px 0 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .page-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 999px;
+            padding: 10px 16px;
+            background: #ffffff;
+            border: 1px solid #e5efe0;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+            font-size: 14px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .recipe-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            height: 100%;
+        }
+
+        .recipe-card {
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid #eef2e8;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.06);
+            transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .recipe-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 22px 42px rgba(0, 0, 0, 0.10);
+                border-color: #dcebd1;
+            }
+
+        .recipe-image-wrap {
+            position: relative;
+            width: 100%;
+            height: 230px;
+            background: linear-gradient(135deg, #f7fbf4, #eef8e8);
+            overflow: hidden;
+        }
+
+        .recipe-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .recipe-card:hover .recipe-image {
+            transform: scale(1.03);
+        }
+
+        .difficulty-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            padding: 8px 13px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: capitalize;
+            backdrop-filter: blur(8px);
+            background: rgba(240, 253, 244, 0.94);
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .recipe-body {
+            padding: 20px 20px 18px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .recipe-title {
+            font-size: 20px;
+            font-weight: 750;
+            color: #2f5d2f;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .recipe-description {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.8;
+            margin-bottom: 16px;
+            min-height: 76px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .recipe-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .meta-pill {
+            background: linear-gradient(135deg, #f8fcf6, #f2f9ed);
+            border: 1px solid #e7f1df;
+            border-radius: 16px;
+            padding: 12px 10px;
+            text-align: center;
+        }
+
+        .meta-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            color: #6b7280;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .meta-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-top: 14px;
+            border-top: 1px solid #f2f4ef;
+        }
+
+        .view-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #4e9f3d;
+        }
+
+        .view-arrow {
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef8e8;
+            color: #4e9f3d;
+            font-size: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .recipe-card:hover .view-arrow {
+            transform: translateX(3px);
+        }
+
+        .empty-state {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 58px 28px;
+            text-align: center;
+            border: 1px solid #eef2e8;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.06);
+        }
+
+        .empty-icon {
+            width: 82px;
+            height: 82px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            color: #4e9f3d;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .empty-state h3 {
+            font-size: 25px;
+            font-weight: 700;
+            color: #2f5d2f;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.8;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .pagination-wrap {
+            display: flex;
+            justify-content: center;
+            margin-top: 34px;
+        }
+
+        .pagination {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            background: #ffffff;
+            padding: 14px;
+            border-radius: 22px;
+            border: 1px solid #eef2e8;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-link-btn,
+        .page-number-btn {
+            min-width: 44px;
+            height: 44px;
+            padding: 0 14px;
+            border-radius: 14px;
+            border: 1px solid #e2ebdc;
+            background: #ffffff;
+            color: #4b5563;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+            .page-link-btn:hover,
+            .page-number-btn:hover {
+                background: #f6fbf2;
+                border-color: #cfe3c2;
+                color: #2f5d2f;
+                text-decoration: none;
+            }
+
+            .page-number-btn.active {
+                background: linear-gradient(135deg, #4e9f3d, #7bc043);
+                color: #ffffff;
+                border-color: transparent;
+                box-shadow: 0 10px 22px rgba(78, 159, 61, 0.22);
+            }
+
+        .alert-error {
+            margin-bottom: 18px;
+            padding: 13px 15px;
+            border-radius: 14px;
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            font-size: 14px;
+        }
+
+        @@media (max-width: 768px) {
+            .hero-card {
+                padding: 28px 22px;
+            }
+
+            .hero-title {
+                font-size: 28px;
+            }
+
+            .recipe-image-wrap {
+                height: 210px;
+            }
+        }
+
+        @@media (max-width: 640px) {
+            .index-container {
+                padding: 24px 14px 56px;
+            }
+
+            .hero-title {
+                font-size: 26px;
+            }
+
+            .topbar {
+                align-items: stretch;
+            }
+
+            .page-badge {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .recipe-title {
+                font-size: 18px;
+            }
+
+            .recipe-meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .recipe-description {
+                min-height: auto;
+            }
+
+            .page-link-btn,
+            .page-number-btn {
+                min-width: 40px;
+                height: 40px;
+                font-size: 13px;
+            }
+        }
+    </style>
+}
+
+<div class="index-page">
+    <div class="index-container">
+        <div class="hero-card">
+            <div class="hero-title">Explore Delicious Recipes</div>
+            <div class="hero-subtitle">
+                Discover tasty ideas shared on CookiMate. Browse recipe cards, check cooking time and servings,
+                and open any recipe to view the full details, ingredients, and instructions.
+            </div>
+            <div class="hero-stats">
+                <span class="hero-stats-number">@Model.TotalRecipes</span>
+                <span>Approved recipes available</span>
+            </div>
+        </div>
+
+        <div class="topbar">
+            <div class="topbar-left">
+                <h2>Recipe Collection</h2>
+                <p>Showing 30 recipes per page for a cleaner browsing experience.</p>
+            </div>
+
+            <div class="page-badge">
+                <span>Page</span>
+                <strong>@Model.CurrentPage</strong>
+                <span>of</span>
+                <strong>@Model.TotalPages</strong>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert-error">@Model.ErrorMessage</div>
+        }
+
+        @if (Model.Recipes == null || !Model.Recipes.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon">🍽</div>
+                <h3>No recipes available</h3>
+                <p>
+                    There are no recipes to display at the moment. Please check back later.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="recipes-grid">
+                @foreach (var recipe in Model.Recipes)
+                {
+                    var imagePath = string.IsNullOrWhiteSpace(recipe.ImageUrl)
+                        ? "/images/recipes/default-food.jpg"
+                        : recipe.ImageUrl;
+
+                    var descriptionText = string.IsNullOrWhiteSpace(recipe.Description)
+                        ? "No description available for this recipe."
+                        : recipe.Description;
+
+                    <a href="/ViewRecipe?id=@recipe.RecipeId&from=index" class="recipe-card-link">
+                        <div class="recipe-card">
+                            <div class="recipe-image-wrap">
+                                <img src="@imagePath" alt="@recipe.Title" class="recipe-image" />
+                                <span class="difficulty-badge">
+                                    @(string.IsNullOrWhiteSpace(recipe.Difficulty) ? "Medium" : recipe.Difficulty)
+                                </span>
+                            </div>
+
+                            <div class="recipe-body">
+                                <div class="recipe-title">@recipe.Title</div>
+
+                                <div class="recipe-description">
+                                    @descriptionText
+                                </div>
+
+                                <div class="recipe-meta-grid">
+                                    <div class="meta-pill">
+                                        <div class="meta-label">Prep Time</div>
+                                        <div class="meta-value">
+                                            @(recipe.PrepTime.HasValue ? $"{recipe.PrepTime} mins" : "-")
+                                        </div>
+                                    </div>
+
+                                    <div class="meta-pill">
+                                        <div class="meta-label">Cook Time</div>
+                                        <div class="meta-value">
+                                            @(recipe.CookTime.HasValue ? $"{recipe.CookTime} mins" : "-")
+                                        </div>
+                                    </div>
+
+                                    <div class="meta-pill">
+                                        <div class="meta-label">Servings</div>
+                                        <div class="meta-value">
+                                            @(recipe.Servings.HasValue? recipe.Servings.ToString() : "-")
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-footer">
+                                    <div class="view-hint">
+                                        <span>View Recipe</span>
+                                    </div>
+                                    <span class="view-arrow">→</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+
+            @if (Model.TotalPages > 1)
+            {
+                <div class="pagination-wrap">
+                    <div class="pagination">
+                        @if (Model.CurrentPage > 1)
+                        {
+                            <a asp-page="/Index" asp-route-p="@(Model.CurrentPage - 1)" class="page-link-btn">‹</a>
+                        }
+
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <a asp-page="/Index" asp-route-p="@i" class="page-number-btn @(i == Model.CurrentPage ? "active" : "")">
+                                @i
+                            </a>
+                        }
+
+                        @if (Model.CurrentPage < Model.TotalPages)
+                        {
+                            <a asp-page="/Index" asp-route-p="@(Model.CurrentPage + 1)" class="page-link-btn">›</a>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

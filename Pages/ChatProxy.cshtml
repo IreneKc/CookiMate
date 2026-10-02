@@ -1,0 +1,6 @@
+﻿@page
+@model CookiMateWeb.Pages.ChatProxyModel
+@* JSON proxy endpoint for the CookiMate chat widget. No rendered UI — the
+   widget POSTs here and this page forwards server-side to the FastAPI
+   /assistant/message endpoint, matching how Search/Recommend broker calls to
+   the AI engine (browser never talks to :8000 directly, so no CORS needed). *@

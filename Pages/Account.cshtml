@@ -1,0 +1,196 @@
+﻿@page
+@model CookiMateWeb.Pages.AccountModel
+@{
+    ViewData["Title"] = "My Account";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <style>
+        .account-page {
+            background: radial-gradient(circle at top left, rgba(123, 192, 67, 0.10), transparent 28%), radial-gradient(circle at top right, rgba(78, 159, 61, 0.08), transparent 24%), linear-gradient(to bottom, #f8fcf6, #ffffff 260px);
+            min-height: 100vh;
+        }
+
+        .account-container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 34px 20px 70px;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, #ffffff, #f6fbf2);
+            border: 1px solid #eef2e8;
+            border-radius: 28px;
+            padding: 30px 30px 8px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
+            margin-bottom: 26px;
+        }
+
+        .hero-title {
+            font-size: 30px;
+            font-weight: 800;
+            color: #2f5d2f;
+            margin-bottom: 6px;
+        }
+
+        .hero-subtitle {
+            color: #6b7280;
+            font-size: 14.5px;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .form-card {
+            background: #ffffff;
+            border: 1px solid #eef2e8;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.05);
+            margin-bottom: 24px;
+        }
+
+        .form-card-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #2f5d2f;
+            margin-bottom: 18px;
+        }
+
+        .field-group {
+            margin-bottom: 18px;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .field-control {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            padding: 11px 14px;
+            font-size: 14.5px;
+            outline: none;
+            transition: border-color 0.15s ease;
+        }
+
+            .field-control:focus {
+                border-color: #7bc043;
+            }
+
+        .save-btn {
+            width: 100%;
+            border: none;
+            border-radius: 999px;
+            padding: 13px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            background: linear-gradient(135deg, #4e9f3d, #7bc043);
+            cursor: pointer;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+        }
+
+            .save-btn:hover {
+                opacity: 0.92;
+                transform: translateY(-1px);
+            }
+
+        .alert-success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .field-error {
+            color: #b91c1c;
+            font-size: 12.5px;
+            margin-top: 4px;
+            display: block;
+        }
+    </style>
+}
+
+<div class="account-page">
+    <div class="account-container">
+        <div class="hero-card">
+            <div class="hero-title">My Account</div>
+            <div class="hero-subtitle">
+                Update your name, email, or password.
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <div class="alert-success">@Model.SuccessMessage</div>
+        }
+
+        <div class="form-card">
+            <div class="form-card-title">Profile Details</div>
+            <div asp-validation-summary="ModelOnly" class="alert-error" style="@(ViewData.ModelState.IsValid ? "display:none;" : "")"></div>
+            <form method="post" asp-page-handler="Details">
+                <div class="field-group">
+                    <label asp-for="DetailsInput.Name" class="field-label">Full Name</label>
+                    <input asp-for="DetailsInput.Name" class="field-control" />
+                    <span asp-validation-for="DetailsInput.Name" class="field-error"></span>
+                </div>
+
+                <div class="field-group">
+                    <label asp-for="DetailsInput.Email" class="field-label">Email</label>
+                    <input asp-for="DetailsInput.Email" class="field-control" />
+                    <span asp-validation-for="DetailsInput.Email" class="field-error"></span>
+                </div>
+
+                <button type="submit" class="save-btn">Save Changes</button>
+            </form>
+        </div>
+
+        <div class="form-card">
+            <div class="form-card-title">Change Password</div>
+            <form method="post" asp-page-handler="Password">
+                <div class="field-group">
+                    <label asp-for="PasswordInput.CurrentPassword" class="field-label">Current Password</label>
+                    <input asp-for="PasswordInput.CurrentPassword" type="password" class="field-control" />
+                    <span asp-validation-for="PasswordInput.CurrentPassword" class="field-error"></span>
+                </div>
+
+                <div class="field-group">
+                    <label asp-for="PasswordInput.NewPassword" class="field-label">New Password</label>
+                    <input asp-for="PasswordInput.NewPassword" type="password" class="field-control" />
+                    <span asp-validation-for="PasswordInput.NewPassword" class="field-error"></span>
+                </div>
+
+                <div class="field-group">
+                    <label asp-for="PasswordInput.ConfirmNewPassword" class="field-label">Confirm New Password</label>
+                    <input asp-for="PasswordInput.ConfirmNewPassword" type="password" class="field-control" />
+                    <span asp-validation-for="PasswordInput.ConfirmNewPassword" class="field-error"></span>
+                </div>
+
+                <button type="submit" class="save-btn">Update Password</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,352 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CookiMate - Register</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: 'Poppins', sans-serif;
+            }
+
+            body {
+                min-height: 100vh;
+                background: linear-gradient(135deg, #f7fbf4, #eef8e8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 24px;
+            }
+
+            .register-wrapper {
+                width: 100%;
+                max-width: 1100px;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                background: #ffffff;
+                border-radius: 24px;
+                overflow: hidden;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+            }
+
+            .register-left {
+                background: linear-gradient(135deg, #8bc34a, #2E7D32, #06373A);
+                color: white;
+                padding: 80px 50px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+            }
+
+            .brand {
+                font-size: 42px;
+                font-weight: 700;
+                display: flex;
+                justify-content: center;
+                margin-bottom: 30px;
+                letter-spacing: 0.5px;
+            }
+
+            .logo-img {
+                width: 600px;
+                max-width: 100%;
+            }
+
+            .tagline {
+                font-size: 18px;
+                line-height: 1.7;
+                max-width: 380px;
+                color: rgba(255, 255, 255, 0.92);
+            }
+
+            .feature-list {
+                margin-top: 28px;
+                padding-left: 18px;
+            }
+
+                .feature-list li {
+                    margin-bottom: 12px;
+                    font-size: 15px;
+                    color: rgba(255, 255, 255, 0.95);
+                }
+
+            .register-right {
+                padding: 60px 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #ffffff;
+            }
+
+            .register-card {
+                width: 100%;
+                max-width: 420px;
+            }
+
+            .register-title {
+                font-size: 32px;
+                font-weight: 700;
+                color: #2f5d2f;
+                margin-bottom: 8px;
+            }
+
+            .register-subtitle {
+                font-size: 15px;
+                color: #6b7280;
+                margin-bottom: 30px;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            .form-label {
+                display: block;
+                font-size: 14px;
+                font-weight: 500;
+                color: #374151;
+                margin-bottom: 8px;
+            }
+
+            .form-control {
+                width: 100%;
+                height: 50px;
+                border: 1.5px solid #d1d5db;
+                border-radius: 14px;
+                padding: 0 16px;
+                font-size: 15px;
+                outline: none;
+                transition: all 0.25s ease;
+            }
+
+            .form-control:focus {
+                border-color: #6dbе45;
+                box-shadow: 0 0 0 4px rgba(109, 190, 69, 0.15);
+            }
+
+            .password-wrapper {
+                position: relative;
+            }
+
+            .toggle-password {
+                position: absolute;
+                right: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                cursor: pointer;
+                color: #6b7280;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .register-btn {
+                width: 100%;
+                height: 52px;
+                border: none;
+                border-radius: 14px;
+                background: linear-gradient(135deg, #4e9f3d, #7bc043);
+                color: white;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .register-btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 10px 20px rgba(78, 159, 61, 0.25);
+            }
+
+            .login-text {
+                text-align: center;
+                margin-top: 22px;
+                font-size: 14px;
+                color: #6b7280;
+            }
+
+            .text-link {
+                font-size: 14px;
+                color: #4e9f3d;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .text-link:hover {
+                text-decoration: underline;
+            }
+
+            .success-message {
+                color: #166534;
+                background: #f0fdf4;
+                border: 1px solid #bbf7d0;
+                padding: 12px 14px;
+                border-radius: 12px;
+                margin-bottom: 18px;
+                font-size: 14px;
+            }
+
+            .validation-summary-errors {
+                color: #dc2626;
+                background: #fef2f2;
+                border: 1px solid #fecaca;
+                padding: 12px 14px;
+                border-radius: 12px;
+                margin-bottom: 18px;
+                font-size: 14px;
+            }
+
+                .validation-summary-errors ul {
+                    list-style: none;
+                    margin: 0;
+                    padding-left: 0;
+                }
+
+            .field-validation-error {
+                color: #dc2626;
+                font-size: 13px;
+                margin-top: 6px;
+                display: block;
+            }
+
+            @@media (max-width: 900px) {
+                .register-wrapper {
+                    grid-template-columns: 1fr;
+                }
+
+                .register-left {
+                    padding: 40px 30px;
+                }
+
+                .register-right {
+                    padding: 40px 30px;
+                }
+
+                .brand {
+                    font-size: 34px;
+                }
+            }
+
+            @@media (max-width: 500px) {
+                .register-left,
+                .register-right {
+                    padding: 30px 20px;
+                }
+
+                .register-title {
+                    font-size: 28px;
+                }
+
+                .brand {
+                    font-size: 30px;
+                }
+            }
+    </style>
+</head>
+<body>
+    <div class="register-wrapper">
+        <div class="register-left">
+            <div class="brand">
+                <img src="/images/logo-light.png" alt="CookiMate Logo" class="logo-img" />
+            </div>
+            <p class="tagline">
+                Create your CookiMate account and start discovering smarter recipe search and personalized recommendations.
+            </p>
+
+            <ul class="feature-list">
+                <li>Save your favourite recipes in one place</li>
+                <li>Get recommendations based on your activity</li>
+                <li>Enjoy a simple and clean cooking experience</li>
+            </ul>
+        </div>
+
+        <div class="register-right">
+            <div class="register-card">
+                <h1 class="register-title">Create account</h1>
+                <p class="register-subtitle">Join CookiMate to start your cooking journey.</p>
+
+                @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+                {
+                    <div class="success-message">@Model.SuccessMessage</div>
+                }
+
+                <div asp-validation-summary="ModelOnly"></div>
+
+                <form method="post">
+                    <div class="form-group">
+                        <label asp-for="Input.Name" class="form-label">Full Name</label>
+                        <input asp-for="Input.Name" class="form-control" placeholder="Enter your full name" />
+                        <span asp-validation-for="Input.Name"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Input.Email" class="form-label">Email</label>
+                        <input asp-for="Input.Email" class="form-control" placeholder="Enter your email" />
+                        <span asp-validation-for="Input.Email"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Input.Password" class="form-label">Password</label>
+                        <div class="password-wrapper">
+                            <input asp-for="Input.Password" class="form-control" placeholder="Enter your password" id="passwordInput" />
+                            <button type="button" class="toggle-password" onclick="togglePassword('passwordInput', this)">Show</button>
+                        </div>
+                        <span asp-validation-for="Input.Password"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
+                        <div class="password-wrapper">
+                            <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirm your password" id="confirmPasswordInput" />
+                            <button type="button" class="toggle-password" onclick="togglePassword('confirmPasswordInput', this)">Show</button>
+                        </div>
+                        <span asp-validation-for="Input.ConfirmPassword"></span>
+                    </div>
+
+                    <button type="submit" class="register-btn">Register</button>
+
+                    <p class="login-text">
+                        Already have an account?
+                        <a asp-page="/Login" class="text-link">Login</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function togglePassword(inputId, button) {
+        const input = document.getElementById(inputId);
+
+        if (input.type === "password") {
+        input.type = "text";
+        button.textContent = "Hide";
+        } else {
+        input.type = "password";
+        button.textContent = "Show";
+        }
+        }
+    </script>
+</body>
+</html>

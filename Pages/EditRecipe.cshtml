@@ -1,0 +1,512 @@
+﻿@page
+@model EditRecipeModel
+@{
+    ViewData["Title"] = "Edit Recipe";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <style>
+        .edit-container {
+            max-width: 1000px;
+            margin: 40px auto 60px auto;
+            padding: 0 20px;
+        }
+
+        .edit-header {
+            margin-bottom: 22px;
+        }
+
+            .edit-header h1 {
+                font-size: 30px;
+                font-weight: 700;
+                color: #2f5d2f;
+                margin-bottom: 6px;
+            }
+
+            .edit-header p {
+                color: #6b7280;
+                font-size: 14px;
+                line-height: 1.7;
+            }
+
+        .edit-card {
+            background: #ffffff;
+            border-radius: 22px;
+            padding: 32px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid #eef2e8;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #2f5d2f;
+            margin-bottom: 16px;
+            margin-top: 6px;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(to right, rgba(78, 159, 61, 0.16), rgba(123, 192, 67, 0.05));
+            margin: 24px 0;
+            border: none;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .required-mark {
+            color: #dc2626;
+            margin-left: 2px;
+        }
+
+        .form-control,
+        .form-select,
+        .form-textarea,
+        .form-file {
+            width: 100%;
+            border: 1.5px solid #d1d5db;
+            border-radius: 14px;
+            padding: 13px 14px;
+            font-size: 14px;
+            transition: all 0.22s ease;
+            background: #ffffff;
+        }
+
+        .form-control,
+        .form-select,
+        .form-file {
+            min-height: 50px;
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+            .form-control:focus,
+            .form-select:focus,
+            .form-textarea:focus,
+            .form-file:focus {
+                border-color: #6dbe45;
+                box-shadow: 0 0 0 4px rgba(109, 190, 69, 0.15);
+                outline: none;
+            }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .checkbox-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            border: 1.5px solid #d1d5db;
+            background: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+            .checkbox-pill:has(input:checked),
+            .checkbox-pill.is-checked {
+                border-color: #6dbe45;
+                background: #f0fdf4;
+                color: #2f5d2f;
+            }
+
+            .checkbox-pill input[type="checkbox"] {
+                accent-color: #4e9f3d;
+                width: 16px;
+                height: 16px;
+                margin: 0;
+            }
+
+        .meal-type-group {
+            margin-top: 32px;
+            margin-bottom: 32px;
+        }
+
+        .alert {
+            padding: 13px 15px;
+            border-radius: 14px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .field-validation-error {
+            color: #dc2626;
+            font-size: 13px;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .ingredient-table {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ingredient-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 2fr;
+            gap: 12px;
+            align-items: start;
+        }
+
+        .ingredient-header {
+            font-size: 13px;
+            font-weight: 700;
+            color: #6b7280;
+            padding: 0 2px;
+        }
+
+        .preview-wrapper {
+            margin-top: 14px;
+        }
+
+        .preview-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-width: 320px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 1.5px solid #d1d5db;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+            background: #f9fafb;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 14px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .save-btn,
+        .cancel-btn {
+            border: none;
+            border-radius: 14px;
+            padding: 14px 24px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.22s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #4e9f3d, #7bc043);
+            color: white;
+            box-shadow: 0 10px 22px rgba(78, 159, 61, 0.22);
+        }
+
+        .cancel-btn {
+            background: white;
+            color: #4e9f3d;
+            border: 1.5px solid #b8dca3;
+        }
+
+        @@media (max-width: 768px) {
+            .grid-2,
+            .ingredient-row {
+                grid-template-columns: 1fr;
+            }
+
+            .ingredient-header {
+                display: none;
+            }
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            text-decoration: none;
+            color: #4e9f3d;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+}
+
+<div class="edit-container">
+    <a href="/MyRecipes" class="back-link">
+        <span>←</span>
+        <span>Back to My Recipes</span>
+    </a>
+    <div class="edit-header">
+        <h1>Edit Recipe</h1>
+        <p>Update your recipe details, ingredients, and metadata.</p>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success">@Model.SuccessMessage</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-error">@Model.ErrorMessage</div>
+    }
+
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div class="edit-card">
+        <form method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Input.RecipeId" />
+            <input type="hidden" asp-for="Input.ExistingImageUrl" />
+
+            <div class="section-title">Recipe Information</div>
+
+            <div class="form-group">
+                <label asp-for="Input.Title" class="form-label">Recipe Title<span class="required-mark">*</span></label>
+                <input asp-for="Input.Title" class="form-control" />
+                <span asp-validation-for="Input.Title"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Description" class="form-label">Description<span class="required-mark">*</span></label>
+                <textarea asp-for="Input.Description" class="form-textarea"></textarea>
+                <span asp-validation-for="Input.Description"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Ingredients<span class="required-mark">*</span></label>
+
+                <div class="ingredient-table">
+                    <div class="ingredient-header ingredient-row">
+                        <div>Quantity</div>
+                        <div>Unit</div>
+                        <div>Ingredient Name</div>
+                    </div>
+
+                    <div id="ingredientsContainer">
+                        @for (int i = 0; i < Model.Input.Ingredients.Count; i++)
+                        {
+                            <div class="ingredient-row">
+                                <input asp-for="Input.Ingredients[i].Quantity" class="form-control" placeholder="e.g. 2" />
+                                <input asp-for="Input.Ingredients[i].Unit" class="form-control" placeholder="e.g. cups" />
+                                <div>
+                                    <input asp-for="Input.Ingredients[i].IngredientName" class="form-control" placeholder="e.g. rice" />
+                                    <span asp-validation-for="Input.Ingredients[i].IngredientName"></span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div style="margin-top: 12px;">
+                    <button type="button" id="addIngredientBtn" class="cancel-btn">+ Add Ingredient</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Instructions" class="form-label">Instructions / Steps<span class="required-mark">*</span></label>
+                <textarea asp-for="Input.Instructions" class="form-textarea"></textarea>
+                <span asp-validation-for="Input.Instructions"></span>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label asp-for="Input.PrepTime" class="form-label">Prep Time (minutes)</label>
+                    <input asp-for="Input.PrepTime" type="number" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.CookTime" class="form-label">Cook Time (minutes)</label>
+                    <input asp-for="Input.CookTime" type="number" class="form-control" />
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label asp-for="Input.Servings" class="form-label">Servings</label>
+                    <input asp-for="Input.Servings" type="number" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.Calories" class="form-label">Calories (per serving)</label>
+                    <input asp-for="Input.Calories" type="number" min="0" class="form-control" placeholder="e.g. 400" />
+                    <small class="text-muted">Optional — leave blank if unknown</small>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.Difficulty" class="form-label">Difficulty</label>
+                    <select asp-for="Input.Difficulty" class="form-select">
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr class="section-divider" />
+
+            <div class="section-title">Recipe Metadata</div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label asp-for="Input.Cuisine" class="form-label">Cuisine</label>
+                    <select asp-for="Input.Cuisine" class="form-select">
+                        <option value="">Select cuisine</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Malay">Malay</option>
+                        <option value="Western">Western</option>
+                        <option value="Indian">Indian</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.DietType" class="form-label">Diet Type</label>
+                    <select asp-for="Input.DietType" class="form-select">
+                        <option value="">Select diet type</option>
+                        <option value="vegetarian">vegetarian</option>
+                        <option value="vegan">vegan</option>
+                        <option value="halal">halal</option>
+                        <option value="low-carb">low-carb</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group meal-type-group">
+                <label class="form-label">Meal Type <span style="font-weight:400;color:#6b7280;">(select all that apply)</span></label>
+                <div class="checkbox-group" id="mealTypeGroup">
+                    @{
+                        var mealTypeOptions = new[] { "breakfast", "lunch", "dinner", "snack", "dessert" };
+                    }
+                    @foreach (var meal in mealTypeOptions)
+                    {
+                        <label class="checkbox-pill">
+                            <input type="checkbox" name="Input.MealTypes" value="@meal"
+                                   checked="@(Model.Input.MealTypes != null && Model.Input.MealTypes.Contains(meal))" />
+                            @meal
+                        </label>
+                    }
+                </div>
+            </div>
+
+            @* <div class="form-group">
+                <label asp-for="Input.Tags" class="form-label">Tags</label>
+                <input asp-for="Input.Tags" class="form-control" />
+            </div> *@
+
+            <div class="form-group">
+                <label asp-for="Input.ImageFile" class="form-label">Recipe Image</label>
+                <input asp-for="Input.ImageFile" type="file" id="imageInput" class="form-file" accept=".jpg,.jpeg,.png,.webp" />
+
+                <div class="preview-wrapper">
+                    <p class="preview-label">Image Preview</p>
+                    <img id="imagePreview"
+                         src="@(string.IsNullOrWhiteSpace(Model.Input.ExistingImageUrl) ? "/images/recipes/default-food.jpg" : Model.Input.ExistingImageUrl)"
+                         alt="Recipe Image Preview"
+                         class="image-preview" />
+                </div>
+            </div>
+
+            <div class="button-row">
+                <button type="submit" class="save-btn">Save Changes</button>
+                <a href="/MyRecipes" class="cancel-btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const imageInput = document.getElementById("imageInput");
+            const previewImage = document.getElementById("imagePreview");
+            const addIngredientBtn = document.getElementById("addIngredientBtn");
+            const ingredientsContainer = document.getElementById("ingredientsContainer");
+
+            if (imageInput) {
+                imageInput.addEventListener("change", function (event) {
+                    const file = event.target.files && event.target.files[0];
+                    if (!file) return;
+
+                    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+                    if (!allowedTypes.includes(file.type)) {
+                        alert("Please upload a JPG, PNG, or WEBP image.");
+                        imageInput.value = "";
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewImage.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            if (addIngredientBtn && ingredientsContainer) {
+                addIngredientBtn.addEventListener("click", function () {
+                    const index = ingredientsContainer.querySelectorAll(".ingredient-row").length;
+
+                    const row = document.createElement("div");
+                    row.className = "ingredient-row";
+                    row.innerHTML = `
+                        <input name="Input.Ingredients[${index}].Quantity" class="form-control" placeholder="e.g. 2" />
+                        <input name="Input.Ingredients[${index}].Unit" class="form-control" placeholder="e.g. cups" />
+                        <div>
+                            <input name="Input.Ingredients[${index}].IngredientName" class="form-control" placeholder="e.g. rice" />
+                        </div>
+                    `;
+                    ingredientsContainer.appendChild(row);
+                });
+            }
+        });
+    </script>
+}

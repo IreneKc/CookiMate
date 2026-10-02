@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11626.88
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookiMateWeb", "CookiMateWeb.csproj", "{D348A941-8B9A-46DD-A6C4-7FEA1E5839F0}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "cookimate-ai", "cookimate-ai.pyproj", "{5163CFF1-09B0-4F8F-9685-57E92A3BDF50}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D348A941-8B9A-46DD-A6C4-7FEA1E5839F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D348A941-8B9A-46DD-A6C4-7FEA1E5839F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D348A941-8B9A-46DD-A6C4-7FEA1E5839F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D348A941-8B9A-46DD-A6C4-7FEA1E5839F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5163CFF1-09B0-4F8F-9685-57E92A3BDF50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5163CFF1-09B0-4F8F-9685-57E92A3BDF50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1DDD7754-52CA-4B82-96A8-03B7A0030C29}
+	EndGlobalSection
+EndGlobal
