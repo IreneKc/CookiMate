@@ -2,12 +2,6 @@
 
 namespace CookiMateWeb.Pages
 {
-    // Loads the same three things Profile.cshtml.cs saves (users.diet +
-    // user_food_preferences), for pages that need them but don't go through
-    // the FastAPI /search or /recommend endpoints (currently just Index,
-    // which queries MariaDB directly). Search's own diet lookup stays inline
-    // in Search_cshtml.cs since it only needs the single Diet value; this
-    // helper exists for the pages that need the full set.
     public static class UserFoodPreferencesHelper
     {
         public class Prefs

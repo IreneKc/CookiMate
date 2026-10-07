@@ -21,14 +21,7 @@ namespace CookiMateWeb.Includes
                 ? userName.Substring(0, 1).ToUpper()
                 : "G";
 
-            // Auto-apply saved diet as the default in this header dropdown too —
-            // this form (not Search.cshtml's own OnGetAsync) is what actually
-            // renders the "Search Keyword / Ingredients / Diet Type / Cuisine"
-            // panel the person sees on every page, so Search_cshtml.cs's own
-            // prefill logic never runs for a submission that starts here. Same
-            // "only the saved default, submitting always overrides" behavior —
-            // there's just no query string to check for presence here, since
-            // this is rendered fresh on every page load regardless of route.
+            
             string savedDiet = isLoggedIn && int.TryParse(userId, out int uid)
                 ? await LoadSavedDietAsync(httpContext, uid)
                 : "";
@@ -198,7 +191,7 @@ namespace CookiMateWeb.Includes
         }
         #endregion
 
-        #region Saved diet lookup (for the header search dropdown's default)
+        #region Saved diet lookup
         private static async Task<string> LoadSavedDietAsync(HttpContext httpContext, int userId)
         {
             try
@@ -216,14 +209,10 @@ namespace CookiMateWeb.Includes
                 await using var cmd = new MySqlCommand(dietSql, connection);
                 cmd.Parameters.AddWithValue("@UserID", userId);
                 var result = await cmd.ExecuteScalarAsync();
-                // Normalized to lowercase to match this dropdown's option values
-                // (and the tags table convention) regardless of how it was saved.
                 return (result as string)?.Trim().ToLowerInvariant() ?? "";
             }
             catch (Exception)
             {
-                // Header renders on every page — a lookup failure here must
-                // never break page rendering. Fall back to "no default".
                 return "";
             }
         }

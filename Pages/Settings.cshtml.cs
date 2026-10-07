@@ -29,8 +29,6 @@ namespace CookiMateWeb.Pages
                 return RedirectToPage("/Login");
             }
 
-            // DB is the source of truth (survives cleared cookies); cookie is
-            // just a fast read for _Layout.cshtml on every page.
             try
             {
                 await using var connection = new MySqlConnection(GetConnectionString());

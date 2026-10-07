@@ -644,11 +644,8 @@ namespace CookiMateWeb.Pages
                             : myReviewReader["comment"]?.ToString();
                     }
 
-                    // Close the reader before running the next query
                     await myReviewReader.CloseAsync();
 
-                    // Load user's saved allergies and cross-reference
-                    // against this recipe's allergen tags
                     if (RecipeAllergens.Any())
                     {
                         string allergyLoadSql = @"

@@ -39,7 +39,6 @@ namespace CookiMateWeb.Pages
                 await using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
 
-                // Check whether email already exists
                 const string checkEmailSql = @"
                     SELECT COUNT(*)
                     FROM users
@@ -58,10 +57,8 @@ namespace CookiMateWeb.Pages
                     }
                 }
 
-                // Hash password before saving
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(Input.Password);
 
-                // Insert new user
                 const string insertSql = @"
                     INSERT INTO users (name, email, password)
                     VALUES (@Name, @Email, @Password);";

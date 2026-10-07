@@ -61,7 +61,6 @@ namespace CookiMateWeb.Pages
                 using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
 
-                // Get summary counts
                 string countSql = @"
                     SELECT 
                         COUNT(*) AS total_count,
@@ -96,7 +95,6 @@ namespace CookiMateWeb.Pages
                     }
                 }
 
-                // Get recipes with optional filter
                 string sql = @"
                     SELECT
                         recipe_id,

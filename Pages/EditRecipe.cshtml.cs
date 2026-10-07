@@ -317,7 +317,6 @@ namespace CookiMateWeb.Pages
 
                     await SaveMetadataTagsAsync(connection, Input.RecipeId, Input.Cuisine, Input.DietType, Input.MealTypes, transaction);
                     
-                    // Nutrition (separate table): upsert when provided, remove when cleared.
                     if (Input.Calories.HasValue)
                     {
                         string upsertNutritionSql = @"
