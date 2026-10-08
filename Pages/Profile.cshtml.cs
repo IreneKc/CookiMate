@@ -22,10 +22,6 @@ namespace CookiMateWeb.Pages
 
         public string? ErrorMessage { get; set; }
 
-        // The fixed allergen list — the standard "big 9" food allergen
-        // categories. Keep Value in sync with AllowedAllergens below and
-        // with whatever taxonomy the future detection script uses to tag
-        // recipes, so a saved profile term always corresponds to a real tag.
         public readonly List<(string Value, string Label)> AllergenOptions = new()
         {
             ("peanut", "Peanut"),
@@ -60,8 +56,6 @@ namespace CookiMateWeb.Pages
                     var result = await dietCmd.ExecuteScalarAsync();
                     Input.Diet = result as string ?? "";
                 }
-                // No row yet is normal for a user who's never saved a profile —
-                // Input.Diet stays "" (No preference).
 
                 Input.SelectedAllergies = await LoadTermsAsync(connection, userId, "allergy");
                 Input.Dislikes = string.Join(", ", await LoadTermsAsync(connection, userId, "dislike"));
@@ -74,17 +68,11 @@ namespace CookiMateWeb.Pages
             return Page();
         }
 
-        // Keep this in sync with the <select> options in Profile.cshtml —
-        // these are the only diet_tag values that currently exist in `tags`
-        // (tag_type = 'diet'). Empty string ("No preference") is allowed.
         private static readonly HashSet<string> AllowedDiets = new(StringComparer.OrdinalIgnoreCase)
         {
             "vegetarian", "vegan", "halal", "low-carb"
         };
 
-        // Keep this in sync with the checkbox values in Profile.cshtml
-        // (AllergenOptions above) — the only allergen terms a future
-        // detection pass will actually be able to match against recipes.
         private static readonly HashSet<string> AllowedAllergens = new(StringComparer.OrdinalIgnoreCase)
         {
             "peanut", "tree-nut", "shellfish", "fish", "egg", "dairy", "soy", "gluten", "sesame"
@@ -105,8 +93,6 @@ namespace CookiMateWeb.Pages
                 return Page();
             }
 
-            // Defense in depth: the checkboxes only ever submit known values,
-            // but never trust that a POST came from the rendered form.
             var invalidAllergen = Input.SelectedAllergies.FirstOrDefault(a => !AllowedAllergens.Contains(a));
             if (invalidAllergen != null)
             {
@@ -125,9 +111,6 @@ namespace CookiMateWeb.Pages
                 await connection.OpenAsync();
                 await using var transaction = await connection.BeginTransactionAsync();
 
-                // --- diet: single value, plain column on users (the row
-                // already exists from Register, so this is always an
-                // UPDATE, never an insert) ---
                 const string updateDietSql = "UPDATE users SET diet = @Diet WHERE user_id = @UserID;";
 
                 await using (var dietCmd = new MySqlCommand(updateDietSql, connection, transaction))
@@ -138,7 +121,6 @@ namespace CookiMateWeb.Pages
                     await dietCmd.ExecuteNonQueryAsync();
                 }
 
-                // --- allergies / dislikes: many values, replace-all per type ---
                 var normalizedAllergies = Input.SelectedAllergies
                     .Select(a => a.ToLowerInvariant())
                     .Distinct()
@@ -178,11 +160,6 @@ namespace CookiMateWeb.Pages
             return terms;
         }
 
-        // Deletes all of this user's rows for the given pref_type, then
-        // re-inserts the current list. Simplest correct approach for a
-        // "save whole form" page — avoids diffing add/remove sets, and the
-        // per-user row count here is always small (a handful of allergies
-        // at most), so the delete+reinsert cost is negligible.
         private static async Task ReplaceTermsAsync(
             MySqlConnection connection,
             MySqlTransaction transaction,
@@ -220,10 +197,6 @@ namespace CookiMateWeb.Pages
             }
         }
 
-        // Splits "peanut,  Peanut , shellfish,," into ["peanut", "shellfish"]
-        // — trims, drops empties, lowercases, and de-duplicates so the same
-        // term typed twice doesn't hit the (user_id, pref_type, term)
-        // primary key twice in one insert batch.
         private static List<string> ParseTerms(string? raw)
         {
             if (string.IsNullOrWhiteSpace(raw))
@@ -243,7 +216,7 @@ namespace CookiMateWeb.Pages
         {
             return _configuration.GetConnectionString("Default")
                 ?? _configuration.GetConnectionString("DefaultConnection")
-                ?? "server=127.0.0.1;port=3306;database=cookimate;uid=root;pwd=;";
+                ?? throw new InvalidOperationException("Database connection string is missing.");
         }
 
         public class InputModel

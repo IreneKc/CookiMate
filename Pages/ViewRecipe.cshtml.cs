@@ -116,7 +116,7 @@ namespace CookiMateWeb.Pages
                 string connectionString =
                     _configuration.GetConnectionString("DefaultConnection")
                     ?? _configuration.GetConnectionString("Default")
-                    ?? "server=127.0.0.1;port=3306;database=cookimate;uid=root;pwd=;";
+                    ?? throw new InvalidOperationException("Database connection string is missing.");
 
                 using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
@@ -204,7 +204,7 @@ namespace CookiMateWeb.Pages
                 string connectionString =
                     _configuration.GetConnectionString("DefaultConnection")
                     ?? _configuration.GetConnectionString("Default")
-                    ?? "server=127.0.0.1;port=3306;database=cookimate;uid=root;pwd=;";
+                    ?? throw new InvalidOperationException("Database connection string is missing.");
 
                 using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
@@ -341,7 +341,7 @@ namespace CookiMateWeb.Pages
                 string connectionString =
                     _configuration.GetConnectionString("DefaultConnection")
                     ?? _configuration.GetConnectionString("Default")
-                    ?? "server=127.0.0.1;port=3306;database=cookimate;uid=root;pwd=;";
+                    ?? throw new InvalidOperationException("Database connection string is missing.");
 
                 using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
@@ -434,7 +434,7 @@ namespace CookiMateWeb.Pages
                 string connectionString =
                     _configuration.GetConnectionString("DefaultConnection")
                     ?? _configuration.GetConnectionString("Default")
-                    ?? "server=127.0.0.1;port=3306;database=cookimate;uid=root;pwd=;";
+                    ?? throw new InvalidOperationException("Database connection string is missing.");
 
                 using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
@@ -644,11 +644,8 @@ namespace CookiMateWeb.Pages
                             : myReviewReader["comment"]?.ToString();
                     }
 
-                    // Close the reader before running the next query
                     await myReviewReader.CloseAsync();
 
-                    // Load user's saved allergies and cross-reference
-                    // against this recipe's allergen tags
                     if (RecipeAllergens.Any())
                     {
                         string allergyLoadSql = @"

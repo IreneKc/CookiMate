@@ -5,21 +5,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CookiMateWeb.Pages
 {
-    // Same-origin JSON proxy for the chat widget. The browser POSTs { message }
-    // here; this handler forwards it server-side to the FastAPI AI engine's
-    // /assistant/message endpoint and streams the JSON response straight back.
-    //
-    // Why a proxy (not a direct browser -> :8000 fetch):
-    //   * Consistency — Search/Recommend already broker AI-engine calls through
-    //     C# HttpClient (see Search.cshtml.cs). This keeps every AI call on the
-    //     same server-side path.
-    //   * No CORS — the browser only ever talks to its own origin.
-    //   * The FastAPI engine stays unexposed to the public/browser.
-    //
-    // [IgnoreAntiforgeryToken]: this is a non-mutating, read-only guidance query
-    // (no DB writes, no state change), called via fetch from the widget without a
-    // form token. Safe to exempt. Do NOT copy this attribute onto any handler
-    // that writes data.
     [IgnoreAntiforgeryToken]
     public class ChatProxyModel : PageModel
     {
@@ -34,8 +19,6 @@ namespace CookiMateWeb.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // Read the raw JSON body ourselves rather than relying on [FromBody]
-            // model binding, which behaves inconsistently on Razor Page handlers.
             string rawBody;
             using (var reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
@@ -87,7 +70,6 @@ namespace CookiMateWeb.Pages
                     { StatusCode = 502 };
                 }
 
-                // Pass the FastAPI JSON through unchanged.
                 return Content(responseJson, "application/json");
             }
             catch (Exception ex)

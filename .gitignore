@@ -7,5 +7,14 @@ obj/
 *.db
 *.sqlite
 node_modules/
-wwwroot/lib/
 appsettings.Development.json
+
+# Secrets
+.env
+
+# Python
+.venv/
+__pycache__/
+
+# Large model files
+*.gguf

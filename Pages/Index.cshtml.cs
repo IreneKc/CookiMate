@@ -32,15 +32,11 @@ namespace CookiMateWeb.Pages
             {
                 string connectionString =
                     _configuration.GetConnectionString("DefaultConnection")
-                    ?? "server=127.0.0.1;port=3306;database=cookimate;uid=root;pwd=;";
+                    ?? throw new InvalidOperationException("Database connection string is missing.");
 
                 using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
 
-                // Auto-apply saved diet + auto-exclude allergens/dislikes for a
-                // logged-in user. Anonymous visitors see the unfiltered feed —
-                // there's no Profile to read preferences from. No override here
-                // (Index has no filter UI at all), same posture as /recommend.
                 string? userIdString = HttpContext.Session.GetString("UserID");
                 UserFoodPreferencesHelper.Prefs? prefs = null;
                 if (int.TryParse(userIdString, out int sessionUserId))
@@ -48,9 +44,6 @@ namespace CookiMateWeb.Pages
                     prefs = await UserFoodPreferencesHelper.LoadAsync(connection, sessionUserId);
                 }
 
-                // Build the shared WHERE clause + params once, reused by both the
-                // COUNT query and the page query so pagination stays consistent
-                // with what's actually being shown.
                 var (whereSql, whereParams) = BuildPreferenceWhereClause(prefs);
 
                 string countSql = $@"
@@ -120,11 +113,7 @@ namespace CookiMateWeb.Pages
             }
         }
 
-        // Builds an appendable " AND ..." fragment (or "" if the user has no
-        // preferences / isn't logged in) plus its bound parameters. Same query
-        // shape as search.py's diet_tag filter and the allergen/dislike
-        // exclusion in user_preferences.py, just expressed directly in SQL
-        // since Index never goes through the FastAPI layer.
+
         private static (string Sql, Dictionary<string, object> Params) BuildPreferenceWhereClause(
             UserFoodPreferencesHelper.Prefs? prefs)
         {

@@ -106,7 +106,7 @@ namespace CookiMateWeb.Pages
 
                 string connectionString =
                     _configuration.GetConnectionString("DefaultConnection")
-                    ?? "server=127.0.0.1;port=3306;database=cookimate;uid=root;pwd=;";
+                    ?? throw new InvalidOperationException("Database connection string is missing.");
 
                 using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
@@ -195,7 +195,6 @@ namespace CookiMateWeb.Pages
                 .Distinct()
                 .ToHashSet();
 
-            // 1) Exact normalized title match = strong duplicate
             const string exactTitleSql = @"
         SELECT COUNT(*)
         FROM recipes
@@ -212,8 +211,6 @@ namespace CookiMateWeb.Pages
                 }
             }
 
-            // 2) Fetch candidate recipes using title keywords only
-            // Avoid broad whole-title LIKE in both directions
             List<CandidateRecipe> candidates = new();
 
             if (newTitleWords.Count == 0)
@@ -261,7 +258,6 @@ namespace CookiMateWeb.Pages
                 }
             }
 
-            // 3) Score each candidate
             foreach (var candidate in candidates)
             {
                 string candidateTitle = NormalizeText(candidate.Title, toLower: false) ?? string.Empty;
@@ -271,7 +267,6 @@ namespace CookiMateWeb.Pages
                     SplitTitleWords(candidateTitle)
                 );
 
-                // Skip weak title matches early
                 if (titleSimilarity < 0.50)
                     continue;
 
@@ -282,7 +277,6 @@ namespace CookiMateWeb.Pages
                     candidateIngredients
                 );
 
-                // Final duplicate rule
                 if (titleSimilarity >= 0.70 && ingredientSimilarity >= 0.60)
                 {
                     return true;
@@ -526,9 +520,7 @@ namespace CookiMateWeb.Pages
             }
             catch (Exception)
             {
-                // Non-fatal: the recipe is still saved even if allergen
-                // detection fails (e.g. FastAPI is down). Tags can be
-                // assigned later via /allergen/detect-all.
+
             }
         }
 
@@ -571,7 +563,7 @@ namespace CookiMateWeb.Pages
         private static async Task SaveNutritionAsync(MySqlConnection connection, long recipeId, int? calories)
         {
             if (calories is null)
-                return;  // leave recipe_nutrition without a row = "unknown", which the filter excludes
+                return;
 
             const string sql = @"
         INSERT INTO recipe_nutrition (recipe_id, calories)

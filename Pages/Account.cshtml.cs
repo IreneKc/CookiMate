@@ -58,7 +58,6 @@ namespace CookiMateWeb.Pages
             return Page();
         }
 
-        // Handles the "Profile Details" form (name + email).
         public async Task<IActionResult> OnPostDetailsAsync()
         {
             string? userIdString = HttpContext.Session.GetString("UserID");
@@ -68,8 +67,6 @@ namespace CookiMateWeb.Pages
                 return RedirectToPage("/Login");
             }
 
-            // Password fields aren't part of this form — drop their validation
-            // errors so they don't block submission of the details form.
             ModelState.Clear();
             if (!TryValidateModel(DetailsInput, nameof(DetailsInput)))
             {
@@ -110,8 +107,6 @@ namespace CookiMateWeb.Pages
                 updateCmd.Parameters.AddWithValue("@UserID", userId);
                 await updateCmd.ExecuteNonQueryAsync();
 
-                // Keep session in sync so Header.cs shows the updated name/email
-                // without requiring a fresh login.
                 HttpContext.Session.SetString("UserName", DetailsInput.Name.Trim());
                 HttpContext.Session.SetString("UserEmail", DetailsInput.Email.Trim());
 
@@ -125,7 +120,6 @@ namespace CookiMateWeb.Pages
             }
         }
 
-        // Handles the "Change Password" form.
         public async Task<IActionResult> OnPostPasswordAsync()
         {
             string? userIdString = HttpContext.Session.GetString("UserID");
@@ -135,8 +129,6 @@ namespace CookiMateWeb.Pages
                 return RedirectToPage("/Login");
             }
 
-            // Re-populate DetailsInput (for redisplay) without validating it —
-            // only the password form was submitted.
             await LoadDetailsForRedisplayAsync(userId);
 
             ModelState.Clear();
@@ -209,8 +201,7 @@ namespace CookiMateWeb.Pages
             }
             catch (Exception)
             {
-                // Best-effort redisplay only; the password handler's own error
-                // handling covers the actual failure path.
+
             }
         }
 
@@ -218,7 +209,7 @@ namespace CookiMateWeb.Pages
         {
             return _configuration.GetConnectionString("Default")
                 ?? _configuration.GetConnectionString("DefaultConnection")
-                ?? "server=127.0.0.1;port=3306;database=cookimate;uid=root;pwd=;";
+                ?? throw new InvalidOperationException("Database connection string is missing.");
         }
 
         public class DetailsInputModel

@@ -37,10 +37,6 @@ namespace CookiMateWeb.Pages
         public bool IsFallback { get; set; }
         public string? FallbackMessage { get; set; }
 
-        // Surfaced from the API's excluded_by_preferences count so
-        // Search.cshtml can show "N results hidden per your saved
-        // preferences" — allergen/dislike exclusion has no dropdown of its
-        // own, so this is the only place the user sees it's happening.
         public int ExcludedByPreferences { get; set; }
 
         public bool HasSearched =>
@@ -51,13 +47,6 @@ namespace CookiMateWeb.Pages
 
         public async Task OnGetAsync()
         {
-            // Auto-apply saved diet as the default filter: only when DietType
-            // wasn't in the query string at all (a fresh visit to /Search),
-            // never when it's present-but-empty — that means the person
-            // explicitly picked "All" in the dropdown, and that choice must
-            // win. This keeps the dropdown itself as the single source of
-            // truth for what gets sent, so a manual change always overrides
-            // the saved default.
             int? userId = TryGetUserId();
             if (!Request.Query.ContainsKey("DietType") && userId.HasValue)
             {
@@ -87,8 +76,6 @@ namespace CookiMateWeb.Pages
                     diet_tag = string.IsNullOrWhiteSpace(DietType) ? null : DietType.Trim(),
                     ingredient_filters = ingredientFilters,
                     cuisine = string.IsNullOrWhiteSpace(Cuisine) ? null : Cuisine.Trim(),
-                    // Lets the API auto-exclude the user's saved allergens/dislikes
-                    // (Profile). No override — always applied when logged in.
                     user_id = userId
                 };
 
@@ -161,10 +148,6 @@ namespace CookiMateWeb.Pages
             return int.TryParse(userIdString, out int userId) ? userId : (int?)null;
         }
 
-        // Mirrors Profile.cshtml.cs's dietSql — same source of truth (users.diet).
-        // Returns "" (not null) when the user has never saved a diet, so it
-        // renders as "All" in the dropdown rather than leaving DietType null
-        // (which would make HasSearched skip the auto-filtered load).
         private async Task<string> LoadSavedDietAsync(int userId)
         {
             try
@@ -180,8 +163,6 @@ namespace CookiMateWeb.Pages
             }
             catch (Exception)
             {
-                // Preference lookup failing shouldn't block the page — fall back
-                // to "no default" and let the person search unfiltered.
                 return "";
             }
         }
@@ -190,7 +171,7 @@ namespace CookiMateWeb.Pages
         {
             return _configuration.GetConnectionString("Default")
                 ?? _configuration.GetConnectionString("DefaultConnection")
-                ?? "server=127.0.0.1;port=3306;database=cookimate;uid=root;pwd=;";
+                ?? throw new InvalidOperationException("Database connection string is missing.");
         }
 
         public class SearchRecipeViewModel
