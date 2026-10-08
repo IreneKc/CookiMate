@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Both",
+    "Projects": [
+      {
+        "Path": "cookimate-ai.pyproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "CookiMateWeb.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

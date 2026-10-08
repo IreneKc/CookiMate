@@ -216,7 +216,7 @@ namespace CookiMateWeb.Pages
         {
             return _configuration.GetConnectionString("Default")
                 ?? _configuration.GetConnectionString("DefaultConnection")
-                ?? "server=127.0.0.1;port=3306;database=cookimate;uid=root;pwd=;";
+                ?? throw new InvalidOperationException("Database connection string is missing.");
         }
 
         public class InputModel

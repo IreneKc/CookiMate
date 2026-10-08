@@ -56,7 +56,7 @@ namespace CookiMateWeb.Pages
             {
                 string connectionString =
                     _configuration.GetConnectionString("DefaultConnection")
-                    ?? "server=127.0.0.1;port=3306;database=cookimate;uid=root;pwd=;";
+                    ?? throw new InvalidOperationException("Database connection string is missing.");
 
                 using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
@@ -180,7 +180,7 @@ namespace CookiMateWeb.Pages
             {
                 string connectionString =
                     _configuration.GetConnectionString("DefaultConnection")
-                    ?? "server=127.0.0.1;port=3306;database=cookimate;uid=root;pwd=;";
+                    ?? throw new InvalidOperationException("Database connection string is missing.");
 
                 using var connection = new MySqlConnection(connectionString);
                 await connection.OpenAsync();
