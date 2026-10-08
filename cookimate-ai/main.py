@@ -1,4 +1,5 @@
 from __future__ import annotations
+from security import require_api_key
 
 import logging
 import hdbscan
@@ -83,11 +84,13 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="CookiMate AI Engine", lifespan=lifespan)
 
-app.include_router(search_router)
-app.include_router(recommend_router)
-app.include_router(admin_router)
-app.include_router(guidance_router)
-app.include_router(allergen_router)
+protected = [Depends(require_api_key)]
+
+app.include_router(search_router, dependencies=protected)
+app.include_router(recommend_router, dependencies=protected)
+app.include_router(admin_router, dependencies=protected)
+app.include_router(guidance_router, dependencies=protected)
+app.include_router(allergen_router, dependencies=protected)
 
 # ---------------------------------------------------------------------------
 # Lightweight endpoints (no ML dependency)
@@ -110,13 +113,13 @@ def health(request: Request, db: Session = Depends(get_db)):
     }
 
 
-@app.get("/recipes")
+@app.get("/recipes", dependencies=protected)
 def list_recipes(db: Session = Depends(get_db)):
     rows = db.execute(text("SELECT recipe_id, title FROM recipes")).fetchall()
     return [{"recipe_id": r[0], "title": r[1]} for r in rows]
 
 
-@app.get("/debug/clusters")
+@app.get("/debug/clusters", dependencies=protected)
 def debug_clusters(request: Request, db: Session = Depends(get_db)):
     cache = getattr(request.app.state, "model_cache", None)
     if cache is None:
@@ -140,7 +143,7 @@ def debug_clusters(request: Request, db: Session = Depends(get_db)):
         },
     }
 
-@app.get("/debug/tune")
+@app.get("/debug/tune", dependencies=protected)
 def debug_tune(
     request: Request,
     min_cluster_sizes: list[int] = Query(default=[4, 5, 6, 8, 10]),

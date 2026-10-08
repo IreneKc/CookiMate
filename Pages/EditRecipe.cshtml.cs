@@ -10,11 +10,13 @@ namespace CookiMateWeb.Pages
     {
         private readonly IWebHostEnvironment _environment;
         private readonly IConfiguration _configuration;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public EditRecipeModel(IWebHostEnvironment environment, IConfiguration configuration)
+        public EditRecipeModel(IWebHostEnvironment environment, IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _environment = environment;
             _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
         }
 
         [BindProperty]
@@ -337,6 +339,8 @@ namespace CookiMateWeb.Pages
                     }
                     await transaction.CommitAsync();
 
+                    await DetectAllergensAsync(Input.RecipeId);
+
                     if (!string.IsNullOrWhiteSpace(oldImageUrl) &&
                         !oldImageUrl.Equals(imageUrl, StringComparison.OrdinalIgnoreCase))
                     {
@@ -408,6 +412,20 @@ namespace CookiMateWeb.Pages
             insertCmd.Parameters.AddWithValue("@ingredient_name", ingredientName);
             object? result = await insertCmd.ExecuteScalarAsync();
             return Convert.ToInt64(result);
+        }
+
+        private async Task DetectAllergensAsync(long recipeId)
+        {
+            try
+            {
+                var http = _httpClientFactory.CreateClient("CookiMateApi");
+                http.Timeout = TimeSpan.FromSeconds(10);
+                await http.PostAsync($"/allergen/detect/{recipeId}", null);
+            }
+            catch (Exception)
+            {
+                // Non-fatal: the edit is still saved even if allergen detection fails.
+            }
         }
 
         private static async Task SaveMetadataTagsAsync(

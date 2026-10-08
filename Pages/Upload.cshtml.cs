@@ -10,11 +10,13 @@ namespace CookiMateWeb.Pages
     {
         private readonly IWebHostEnvironment _environment;
         private readonly IConfiguration _configuration;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public UploadRecipeModel(IWebHostEnvironment environment, IConfiguration configuration)
+        public UploadRecipeModel(IWebHostEnvironment environment, IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _environment = environment;
             _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
         }
 
         [BindProperty]
@@ -507,16 +509,13 @@ namespace CookiMateWeb.Pages
             return Convert.ToInt64(result);
         }
 
-        private static async Task DetectAllergensAsync(long recipeId)
+        private async Task DetectAllergensAsync(long recipeId)
         {
             try
             {
-                using var http = new HttpClient();
+                var http = _httpClientFactory.CreateClient("CookiMateApi");
                 http.Timeout = TimeSpan.FromSeconds(10);
-                await http.PostAsync(
-                    $"http://localhost:8000/allergen/detect/{recipeId}",
-                    null
-                );
+                await http.PostAsync($"/allergen/detect/{recipeId}", null);
             }
             catch (Exception)
             {

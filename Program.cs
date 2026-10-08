@@ -15,7 +15,10 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddHttpClient("CookiMateApi", client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"]!);
+    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"] ?? "http://127.0.0.1:8000");
+    client.DefaultRequestHeaders.Add("X-Api-Key",
+        builder.Configuration["ApiSettings:ApiKey"]
+        ?? throw new InvalidOperationException("ApiSettings:ApiKey is missing."));
 });
 
 builder.Services.AddScoped<CookiMateApiService>();
