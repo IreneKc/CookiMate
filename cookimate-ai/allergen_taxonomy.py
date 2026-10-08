@@ -2,9 +2,12 @@
 # TIER A — explicit / direct name matches
 # ---------------------------------------------------------------------------
 TIER_A_EXPLICIT: dict[str, list[str]] = {
-    # --- peanut ---
+        # --- peanut ---
     "peanut": ["peanut"],
+    "peanuts": ["peanut"],
     "crushed peanut": ["peanut"],
+    "crushed peanuts": ["peanut"],
+    "roasted peanut": ["peanut"],
     "roasted peanuts": ["peanut"],
 
     # --- tree-nut ---

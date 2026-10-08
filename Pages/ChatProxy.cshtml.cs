@@ -49,16 +49,12 @@ namespace CookiMateWeb.Pages
 
             try
             {
-                var baseUrl =
-                    _configuration["ApiSettings:BaseUrl"]
-                    ?? "http://127.0.0.1:8000";
-
-                var client = _httpClientFactory.CreateClient();
+                var client = _httpClientFactory.CreateClient("CookiMateApi");
 
                 var payload = JsonSerializer.Serialize(new { message = message.Trim() });
                 using var content = new StringContent(payload, Encoding.UTF8, "application/json");
 
-                using var response = await client.PostAsync($"{baseUrl}/assistant/message", content);
+                using var response = await client.PostAsync("/assistant/message", content);
                 var responseJson = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)

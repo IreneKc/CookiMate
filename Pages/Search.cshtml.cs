@@ -79,16 +79,12 @@ namespace CookiMateWeb.Pages
                     user_id = userId
                 };
 
-                var baseUrl =
-                    _configuration["ApiSettings:BaseUrl"]
-                    ?? "http://127.0.0.1:8000";
-
-                var client = _httpClientFactory.CreateClient();
+                var client = _httpClientFactory.CreateClient("CookiMateApi");
 
                 var json = JsonSerializer.Serialize(payload);
                 using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                using var response = await client.PostAsync($"{baseUrl}/search", content);
+                using var response = await client.PostAsync("/search", content);
 
                 if (!response.IsSuccessStatusCode)
                 {

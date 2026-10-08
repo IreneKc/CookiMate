@@ -33,6 +33,9 @@
     <Compile Include="allergen.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="security.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="user_preferences.py">
       <SubType>Code</SubType>
     </Compile>
@@ -56,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".env" />
+    <Content Include=".env.example" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>

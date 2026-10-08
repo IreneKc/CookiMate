@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -134,16 +135,16 @@ namespace CookiMateWeb.Includes
                 headerHTML += "<div id='userDropdownMenu' class='hidden absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden z-[9999]'>";
                 headerHTML += "<div class='px-4 py-4 border-b border-gray-100'>";
                 headerHTML += "<div class='flex items-center gap-3'>";
-                headerHTML += $"<div class='w-11 h-11 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-lg'>{firstLetter}</div>";
+                headerHTML += $"<div class='w-11 h-11 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-lg'>{WebUtility.HtmlEncode(firstLetter)}</div>";
                 headerHTML += "<div>";
-                headerHTML += $"<p class='text-sm font-semibold text-gray-800'>{userName}</p>";
-                headerHTML += $"<p class='text-xs text-gray-500'>{userEmail}</p>";
+                headerHTML += $"<p class='text-sm font-semibold text-gray-800'>{WebUtility.HtmlEncode(userName)}</p>";
+                headerHTML += $"<p class='text-xs text-gray-500'>{WebUtility.HtmlEncode(userEmail)}</p>";
                 headerHTML += "</div>";
                 headerHTML += "</div>";
                 headerHTML += "</div>";
 
                 headerHTML += "<div class='py-2'>";
-                headerHTML += "<a href='/Profile' class='block px-4 py-3 text-sm text-gray-700 hover:bg-green-50'>My Profile</a>";
+                headerHTML += $"<a href='/Profile' class='block px-4 py-3 text-sm text-gray-700 hover:bg-green-50'>My Profile</a>";
                 headerHTML += "<a href='/Account' class='block px-4 py-3 text-sm text-gray-700 hover:bg-green-50'>My Account</a>";
                 headerHTML += "<a href='/Favorites' class='block px-4 py-3 text-sm text-gray-700 hover:bg-green-50'>Favorites</a>";
                 headerHTML += "<a href='/Settings' class='block px-4 py-3 text-sm text-gray-700 hover:bg-green-50'>Settings</a>";
