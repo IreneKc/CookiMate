@@ -4,6 +4,38 @@ A recipe recommendation web app that helps people find recipes they will actuall
 
 Built as a final-year project, using ASP.NET Core Razor Pages for the website and a separate FastAPI service for the AI and machine learning parts.
 
+<br>
+
+## Screenshots
+- **Home page**<img width="773" height="870" alt="Screenshot 2026-09-08 175709" src="https://github.com/user-attachments/assets/04e7d17f-8955-42c7-ac1e-0028cf64de9d" />
+
+<br>
+
+- **Recipe recommendations**<img width="765" height="642" alt="Screenshot 2026-09-07 143451" src="https://github.com/user-attachments/assets/9625e367-9ef5-451c-91f1-0aa7131c1fad" />
+
+<br>
+
+- **Cooking chatbot**<img width="1577" height="898" alt="Screenshot 2026-09-07 225547" src="https://github.com/user-attachments/assets/1e22f034-a2df-4b41-b4e3-cd82fe230c18" />
+
+<br>
+
+<img width="371" height="602" alt="Screenshot 2026-09-07 225727" src="https://github.com/user-attachments/assets/6bbc9129-b36f-4adf-a8e1-00137d8da367" />
+
+<br><br>
+
+- **Meal planning**
+<img width="516" height="640" alt="Screenshot 2026-09-07 111543" src="https://github.com/user-attachments/assets/31c4ec09-137d-458c-88e2-be91e0e9874e" />
+
+<br><br>
+
+- **Recipe details**<img width="752" height="641" alt="Screenshot 2026-09-07 110146" src="https://github.com/user-attachments/assets/e57f7b90-3fdb-4eb2-acdb-b3bbd183fd67" />
+
+<br>
+
+- **Search recipe**<img width="771" height="771" alt="Screenshot 2026-09-07 105040" src="https://github.com/user-attachments/assets/3a6f39eb-44a6-40a7-9fdf-67f525e23981" />
+
+<br>
+
 ## Features
 
 - **Recipe search** that searches within the group (cluster) of recipes most related to user's query.
@@ -13,6 +45,8 @@ Built as a final-year project, using ASP.NET Core Razor Pages for the website an
 - **Cooking assistant chatbot** that understands requests like "something quick with chicken" and turns them into search filters. A small local AI model helps when the rule-based parser can't understand the message.
 - **Duplicate recipe check** on upload, so the same recipe isn't added twice.
 - **Calorie filter, meal plans, favorites, reviews and recipe uploads**, plus an admin page to approve and manage recipes.
+
+<br>
 
 ## Tech stack
 
@@ -25,6 +59,7 @@ Built as a final-year project, using ASP.NET Core Razor Pages for the website an
 | Database | MariaDB 10.4 (XAMPP) |
 | Passwords | BCrypt hashing |
 
+<br>
 
 ## How it fits together
 
@@ -39,6 +74,7 @@ flowchart LR
 ```
 The website handles pages, accounts and saving data. It calls the AI service for search, recommendations, chatbot messages and allergen tagging. The AI service builds its models from the database when it starts, and rebuilds them every night at 02:00.
 
+<br>
 
 ## Project structure
 
@@ -63,9 +99,7 @@ CookiMateSource/
 └── CookiMateWeb.sln
 ```
 
-
-
-
+<br>
 
 ## Getting started
 
